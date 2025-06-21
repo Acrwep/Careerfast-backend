@@ -4,6 +4,8 @@ const userController = require("../controllers/UserController");
 const LoginController = require("../controllers/LoginController");
 const RoleController = require("../controllers/RoleController");
 const OrganizationController = require("../controllers/OrganizationController");
+const { verifyToken } = require("../Validation/Validation");
+const JobsController = require("../controllers/JobsController");
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -22,5 +24,33 @@ router.get(
   "/organization/type/get",
   OrganizationController.getOrganizationTypes
 );
+
+//Job module APIs
+router.post("/job/nature/add", verifyToken, JobsController.insertJobNature);
+router.get("/job/getJobNature", verifyToken, JobsController.getJobNature);
+router.post(
+  "/job/workplace-type/add",
+  verifyToken,
+  JobsController.insertWorkPlaceType
+);
+router.get(
+  "/job/workplace-type/get",
+  verifyToken,
+  JobsController.getWorkplaceType
+);
+
+router.get(
+  "/job/workLocation/get",
+  verifyToken,
+  JobsController.getWorklocation
+);
+
+router.get(
+  "/job/durationTypes/get",
+  verifyToken,
+  JobsController.getInternshipDuration
+);
+
+router.get("/getDuration", verifyToken, JobsController.getDurationPeriod);
 
 module.exports = router;
