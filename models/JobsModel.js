@@ -97,6 +97,30 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getBenefits: async () => {
+    try {
+      const [benefits] = await pool.query(
+        `SELECT id, name FROM benefits WHERE is_active = 1 ORDER BY id`
+      );
+
+      return benefits;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getGender: async () => {
+    try {
+      const [genders] = await pool.query(
+        `SELECT id, name FROM gender WHERE is_active = 1 ORDER BY id`
+      );
+
+      return genders;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

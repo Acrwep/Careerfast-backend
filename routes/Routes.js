@@ -52,5 +52,7 @@ router.get(
 );
 
 router.get("/getDuration", verifyToken, JobsController.getDurationPeriod);
+router.get("/getBenefits", verifyToken, JobsController.getBenefits);
+router.get("/getGender", verifyToken, JobsController.getGender);
 
 module.exports = router;

@@ -109,6 +109,36 @@ const getDurationPeriod = async (request, response) => {
   }
 };
 
+const getBenefits = async (request, response) => {
+  try {
+    const benefits = await JobsModel.getBenefits();
+    response.status(200).send({
+      message: "Benefits fetched successfully",
+      data: benefits,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching benefits",
+      details: error.message,
+    });
+  }
+};
+
+const getGender = async (request, response) => {
+  try {
+    const genders = await JobsModel.getGender();
+    response.status(200).send({
+      message: "Benefits fetched successfully",
+      data: genders,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching benefits",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -117,4 +147,6 @@ module.exports = {
   getWorklocation,
   getInternshipDuration,
   getDurationPeriod,
+  getBenefits,
+  getGender,
 };
