@@ -54,5 +54,7 @@ router.get(
 router.get("/getDuration", verifyToken, JobsController.getDurationPeriod);
 router.get("/getBenefits", verifyToken, JobsController.getBenefits);
 router.get("/getGender", verifyToken, JobsController.getGender);
+router.get("/getEligibility", verifyToken, JobsController.getEligibility);
+router.get("/getSalaryType", verifyToken, JobsController.getSalaryType);
 
 module.exports = router;

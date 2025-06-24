@@ -101,7 +101,7 @@ const JobsModel = {
   getBenefits: async () => {
     try {
       const [benefits] = await pool.query(
-        `SELECT id, name FROM benefits WHERE is_active = 1 ORDER BY id`
+        `SELECT id, name, logo FROM benefits WHERE is_active = 1 ORDER BY id`
       );
 
       return benefits;
@@ -117,6 +117,30 @@ const JobsModel = {
       );
 
       return genders;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getEligibility: async () => {
+    try {
+      const [eligibility] = await pool.query(
+        `SELECT id, name FROM eligibility_type WHERE is_active = 1 ORDER BY id`
+      );
+
+      return eligibility;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getSalaryType: async () => {
+    try {
+      const [salaryType] = await pool.query(
+        `SELECT id, name FROM salary_type WHERE is_active = 1 ORDER BY id`
+      );
+
+      return salaryType;
     } catch (error) {
       throw new Error(error.message);
     }
