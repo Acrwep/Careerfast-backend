@@ -145,6 +145,80 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  jobPosting: async (
+    user_id,
+    company_name,
+    company_logo,
+    job_title,
+    job_nature,
+    duration_period,
+    workplace_type,
+    work_location,
+    job_category,
+    skills,
+    experience_type,
+    experience_required,
+    salary_type,
+    salary_figure,
+    diversity_hiring,
+    benefits,
+    job_description,
+    openings,
+    created_at
+  ) => {
+    try {
+      const query = `INSERT INTO job_post(
+                        user_id,
+                        company_name,
+                        company_logo,
+                        job_title,
+                        job_nature,
+                        duration_period,
+                        workplace_type,
+                        work_location,
+                        job_category,
+                        skills,
+                        experience_type,
+                        experience_required,
+                        salary_type,
+                        salary_figure,
+                        diversity_hiring,
+                        benefits,
+                        job_description,
+                        openings,
+                        created_at
+                    )
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+      const values = [
+        user_id,
+        company_name,
+        company_logo,
+        job_title,
+        job_nature,
+        JSON.stringify(duration_period),
+        workplace_type,
+        work_location,
+        JSON.stringify(job_category),
+        JSON.stringify(skills),
+        experience_type,
+        JSON.stringify(experience_required),
+        salary_type,
+        salary_figure,
+        JSON.stringify(diversity_hiring),
+        JSON.stringify(benefits),
+        job_description,
+        openings,
+        created_at,
+      ];
+      console.log("Values", values);
+
+      const [result] = await pool.query(query, values);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

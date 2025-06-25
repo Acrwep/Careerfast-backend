@@ -1,3 +1,4 @@
+// const { use } = require("react");
 const JobsModel = require("../models/JobsModel");
 const { response, request } = require("express");
 
@@ -169,6 +170,77 @@ const getSalaryType = async (request, response) => {
   }
 };
 
+const jobPosting = async (request, response) => {
+  const {
+    user_id,
+    company_name,
+    company_logo,
+    job_title,
+    job_nature,
+    duration_period,
+    workplace_type,
+    work_location,
+    job_category,
+    skills,
+    experience_type,
+    experience_required,
+    salary_type,
+    salary_figure,
+    diversity_hiring,
+    benefits,
+    job_description,
+    openings,
+    created_at,
+  } = request.body;
+  const formattedDuration = Array.isArray(duration_period)
+    ? duration_period
+    : [duration_period];
+  const formattedJobCategory = Array.isArray(job_category)
+    ? job_category
+    : [job_category];
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  const formattedExpReq = Array.isArray(experience_required)
+    ? experience_required
+    : [experience_required];
+  const formattedDiversity = Array.isArray(diversity_hiring)
+    ? diversity_hiring
+    : [diversity_hiring];
+  const formattedBenefits = Array.isArray(benefits) ? benefits : [benefits];
+
+  try {
+    const result = await JobsModel.jobPosting(
+      user_id,
+      company_name,
+      company_logo,
+      job_title,
+      job_nature,
+      formattedDuration,
+      workplace_type,
+      work_location,
+      formattedJobCategory,
+      formattedSkills,
+      experience_type,
+      formattedExpReq,
+      salary_type,
+      salary_figure,
+      formattedDiversity,
+      formattedBenefits,
+      job_description,
+      openings,
+      created_at
+    );
+    return response.status(201).send({
+      message: "Job posted successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error posting job",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -181,4 +253,5 @@ module.exports = {
   getGender,
   getEligibility,
   getSalaryType,
+  jobPosting,
 };

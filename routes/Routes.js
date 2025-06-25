@@ -6,6 +6,7 @@ const RoleController = require("../controllers/RoleController");
 const OrganizationController = require("../controllers/OrganizationController");
 const { verifyToken } = require("../Validation/Validation");
 const JobsController = require("../controllers/JobsController");
+const { jobPosting } = require("../models/JobsModel");
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -56,5 +57,6 @@ router.get("/getBenefits", verifyToken, JobsController.getBenefits);
 router.get("/getGender", verifyToken, JobsController.getGender);
 router.get("/getEligibility", verifyToken, JobsController.getEligibility);
 router.get("/getSalaryType", verifyToken, JobsController.getSalaryType);
+router.post("/jobPosting", verifyToken, JobsController.jobPosting);
 
 module.exports = router;
