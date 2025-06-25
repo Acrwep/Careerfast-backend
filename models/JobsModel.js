@@ -219,6 +219,18 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getYears: async () => {
+    try {
+      const [years] = await pool.query(
+        `SELECT id, year FROM year_master ORDER BY id`
+      );
+
+      return years;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

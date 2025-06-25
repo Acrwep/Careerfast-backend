@@ -241,6 +241,21 @@ const jobPosting = async (request, response) => {
   }
 };
 
+const getYears = async (request, response) => {
+  try {
+    const years = await JobsModel.getYears();
+    response.status(200).send({
+      message: "Years fetched successfully",
+      data: years,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching years",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -254,4 +269,5 @@ module.exports = {
   getEligibility,
   getSalaryType,
   jobPosting,
+  getYears,
 };
