@@ -190,6 +190,7 @@ const jobPosting = async (request, response) => {
     benefits,
     job_description,
     openings,
+    working_days,
     created_at,
   } = request.body;
   const formattedDuration = Array.isArray(duration_period)
@@ -227,6 +228,7 @@ const jobPosting = async (request, response) => {
       formattedBenefits,
       job_description,
       openings,
+      working_days,
       created_at
     );
     return response.status(201).send({

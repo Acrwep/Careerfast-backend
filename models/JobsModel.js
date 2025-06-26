@@ -165,6 +165,7 @@ const JobsModel = {
     benefits,
     job_description,
     openings,
+    working_days,
     created_at
   ) => {
     try {
@@ -187,9 +188,10 @@ const JobsModel = {
                         benefits,
                         job_description,
                         openings,
+                        working_days,
                         created_at
                     )
-                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
       const values = [
         user_id,
         company_name,
@@ -209,6 +211,7 @@ const JobsModel = {
         JSON.stringify(benefits),
         job_description,
         openings,
+        working_days,
         created_at,
       ];
       console.log("Values", values);
