@@ -237,7 +237,15 @@ const JobsModel = {
   getSkills: async () => {
     try {
       const [skills] = await pool.query(
-        `SELECT id, name FROM skills ORDER BY name`
+        `SELECT
+            id,
+            name
+        FROM
+            skills
+        ORDER BY CASE WHEN name
+            = 'Others' THEN 1 ELSE 0
+        END,
+        name`
       );
       return skills;
     } catch (error) {
@@ -248,7 +256,7 @@ const JobsModel = {
   getJobCategories: async () => {
     try {
       const [categories] = await pool.query(
-        `SELECT id, category_name FROM job_categories WHERE is_active = 1 ORDER BY category_name`
+        `SELECT id, category_name FROM job_categories WHERE is_active = 1 ORDER BY CASE WHEN category_name = 'Others' THEN 1 ELSE 0 END, category_name`
       );
       return categories;
     } catch (error) {
