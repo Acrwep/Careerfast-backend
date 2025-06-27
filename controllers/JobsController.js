@@ -258,6 +258,36 @@ const getYears = async (request, response) => {
   }
 };
 
+const getSkills = async (request, response) => {
+  try {
+    const skills = await JobsModel.getSkills();
+    response.status(200).send({
+      message: "Skills fetched successfully",
+      data: skills,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching skills",
+      details: error.message,
+    });
+  }
+};
+
+const getJobCategories = async (request, response) => {
+  try {
+    const categories = await JobsModel.getJobCategories();
+    response.status(200).send({
+      message: "Job categories fetched successfully",
+      data: categories,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching job categories",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -272,4 +302,6 @@ module.exports = {
   getSalaryType,
   jobPosting,
   getYears,
+  getSkills,
+  getJobCategories,
 };

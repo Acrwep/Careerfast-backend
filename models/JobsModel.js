@@ -214,7 +214,6 @@ const JobsModel = {
         working_days,
         created_at,
       ];
-      console.log("Values", values);
 
       const [result] = await pool.query(query, values);
       return result.affectedRows;
@@ -230,6 +229,28 @@ const JobsModel = {
       );
 
       return years;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getSkills: async () => {
+    try {
+      const [skills] = await pool.query(
+        `SELECT id, name FROM skills ORDER BY name`
+      );
+      return skills;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getJobCategories: async () => {
+    try {
+      const [categories] = await pool.query(
+        `SELECT id, category_name FROM job_categories WHERE is_active = 1 ORDER BY category_name`
+      );
+      return categories;
     } catch (error) {
       throw new Error(error.message);
     }
