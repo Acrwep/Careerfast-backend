@@ -288,6 +288,50 @@ const getJobCategories = async (request, response) => {
   }
 };
 
+const getJobPosts = async (request, response) => {
+  const filters = {
+    job_categories: request.body.job_categories
+      ? request.body.job_categories
+      : undefined,
+    workplace_type: request.body.workplace_type,
+    work_location: request.body.work_location,
+    working_days: request.body.working_days,
+    start_date: request.body.start_date,
+    end_date: request.body.end_date,
+    salary_sort: request.body.salary_sort,
+  };
+  console.log("fff", filters);
+
+  try {
+    const posts = await JobsModel.getJobPosts(filters);
+    response.status(200).send({
+      message: "Job posts fetched successfully",
+      data: posts,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching job posts",
+      details: error.message,
+    });
+  }
+};
+
+const registrationClose = async (request, response) => {
+  const { id } = request.body;
+  try {
+    const result = await JobsModel.registrationClose(id);
+    response.status(200).send({
+      message: "Registration closed successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error closing registration",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -304,4 +348,6 @@ module.exports = {
   getYears,
   getSkills,
   getJobCategories,
+  getJobPosts,
+  registrationClose,
 };

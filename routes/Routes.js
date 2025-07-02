@@ -7,6 +7,7 @@ const OrganizationController = require("../controllers/OrganizationController");
 const { verifyToken } = require("../Validation/Validation");
 const JobsController = require("../controllers/JobsController");
 const { jobPosting } = require("../models/JobsModel");
+const EmailController = require("../controllers/EmailController");
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -61,5 +62,11 @@ router.post("/jobPosting", verifyToken, JobsController.jobPosting);
 router.get("/getYears", JobsController.getYears);
 router.get("/getSkills", JobsController.getSkills);
 router.get("/getJobCategories", JobsController.getJobCategories);
+router.post("/getJobPosts", verifyToken, JobsController.getJobPosts);
+router.put("/registrationClose", verifyToken, JobsController.registrationClose);
+
+// Email verification
+router.post("/sendOTP", EmailController.sendVerificationEmail);
+router.post("/verifyOTP", EmailController.verifyOTP);
 
 module.exports = router;

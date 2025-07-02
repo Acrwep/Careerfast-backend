@@ -263,6 +263,183 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  // getJobPosts: async () => {
+  //   try {
+  //     const query = `SELECT
+  //                       id,
+  //                       company_name,
+  //                       company_logo,
+  //                       job_title,
+  //                       job_nature,
+  //                       duration_period,
+  //                       workplace_type,
+  //                       work_location,
+  //                       job_category,
+  //                       skills,
+  //                       experience_type,
+  //                       experience_required,
+  //                       salary_type,
+  //                       salary_figure,
+  //                       diversity_hiring,
+  //                       benefits,
+  //                       job_description,
+  //                       openings,
+  //                       working_days,
+  //                       created_at
+  //                   FROM
+  //                       job_post`;
+  //     const [posts] = await pool.query(query);
+  //     return posts;
+  //   } catch (error) {
+  //     throw new Error(error.message);
+  //   }
+  // },
+
+  getJobPosts: async (filters = {}) => {
+    try {
+      let query = `SELECT
+                      id,
+                      company_name,
+                      company_logo,
+                      job_title,
+                      job_nature,
+                      duration_period,
+                      workplace_type,
+                      work_location,
+                      job_category,
+                      skills,
+                      experience_type,
+                      experience_required,
+                      salary_type,
+                      min_salary,
+                      max_salary,
+                      diversity_hiring,
+                      benefits,
+                      job_description,
+                      openings,
+                      working_days,
+                      created_at
+                  FROM
+                      job_post`;
+
+      const whereClauses = [];
+      const queryParams = [];
+
+      // Workplace type filter
+      if (filters.workplace_type) {
+        whereClauses.push(`workplace_type = ?`);
+        queryParams.push(filters.workplace_type);
+      }
+
+      // Workplace location filter
+      if (filters.work_location) {
+        whereClauses.push(`work_location = ?`);
+        queryParams.push(filters.work_location);
+      }
+
+      // Working days filter
+      if (filters.working_days) {
+        whereClauses.push(`working_days = ?`);
+        queryParams.push(filters.working_days);
+      }
+
+      // Date range filter
+      if (filters.start_date && filters.end_date) {
+        whereClauses.push(`DATE(created_at) BETWEEN ? AND ?`);
+        queryParams.push(filters.start_date, filters.end_date);
+      } else if (filters.start_date) {
+        whereClauses.push(`DATE(created_at) >= ?`);
+        queryParams.push(filters.start_date);
+      } else if (filters.end_date) {
+        whereClauses.push(`DATE(created_at) <= ?`);
+        queryParams.push(filters.end_date);
+      }
+
+      // Job category filter (array of categories)
+      // In your model where you build the query:
+      if (filters.job_categories && filters.job_categories.length > 0) {
+        whereClauses.push(`(
+          ${filters.job_categories
+            .map(() => `JSON_CONTAINS(job_category, ?)`)
+            .join(" OR ")}
+        )`);
+
+        filters.job_categories.forEach((category) => {
+          queryParams.push(JSON.stringify(category)); // Just the string, not array
+        });
+      }
+
+      if (whereClauses.length > 0) {
+        query += ` WHERE ${whereClauses.join(" AND ")}`;
+      }
+
+      // Salary sorting
+      if (filters.salary_sort) {
+        if (filters.salary_sort === "low_to_high") {
+          query += ` ORDER BY COALESCE(min_salary, 0) ASC`;
+        } else if (filters.salary_sort === "high_to_low") {
+          query += ` ORDER BY COALESCE(max_salary, 0) DESC`;
+        }
+      } else {
+        query += ` ORDER BY created_at DESC`;
+      }
+
+      const [posts] = await pool.query(query, queryParams);
+
+      // Helper function to safely parse JSON arrays
+      const safeParseArray = (str) => {
+        try {
+          return str ? JSON.parse(str) : [];
+        } catch (e) {
+          return [];
+        }
+      };
+
+      const processedPosts = posts.map((post) => ({
+        ...post,
+        duration_period: safeParseArray(post.duration_period),
+        job_category: safeParseArray(post.job_category),
+        skills: safeParseArray(post.skills),
+        experience_required: safeParseArray(post.experience_required),
+        diversity_hiring: safeParseArray(post.diversity_hiring),
+        benefits: safeParseArray(post.benefits),
+        working_days: post.working_days || null,
+      }));
+
+      return {
+        success: true,
+        message: "Job posts fetched successfully",
+        data: processedPosts,
+        meta: {
+          total: processedPosts.length,
+          filters: filters,
+        },
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  registrationClose: async (id) => {
+    try {
+      const [is_exists] = await pool.query(
+        `SELECT id FROM job_post WHERE id = ? AND is_closed = 0`,
+        id
+      );
+      if (is_exists.length == 0) {
+        throw new Error("Invalid id");
+      }
+
+      const [result] = await pool.query(
+        `UPDATE job_post SET is_closed = 1 WHERE id = ?`,
+        id
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;
