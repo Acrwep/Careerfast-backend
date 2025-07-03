@@ -111,9 +111,26 @@ const deleteUser = async (request, response) => {
   }
 };
 
+const forgotPassword = async (request, response) => {
+  const { email, password } = request.body;
+  try {
+    const result = await userModel.forgotPassword(email, password);
+    response.status(200).json({
+      message: "Password changed successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while changing password",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
   updateUser,
   deleteUser,
+  forgotPassword,
 };

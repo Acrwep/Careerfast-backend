@@ -80,6 +80,19 @@ const UserModel = {
       throw new Error(error.message);
     }
   },
+
+  forgotPassword: async (email, password) => {
+    try {
+      const hashedPassword = await hashPassword(password);
+      const [result] = await pool.query(
+        `UPDATE users SET password = ? WHERE email = ?`,
+        [email, hashedPassword]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 // 🔐 Encrypt (Hash) Password
