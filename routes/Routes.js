@@ -69,5 +69,7 @@ router.put("/registrationClose", verifyToken, JobsController.registrationClose);
 router.post("/sendOTP", EmailController.sendVerificationEmail);
 router.post("/verifyOTP", EmailController.verifyOTP);
 router.put("/forgotPassword", userController.forgotPassword);
+router.post("/insertProfile", userController.insertProfile);
+router.get("/getExperienceRange", JobsController.getExperienceRange);
 
 module.exports = router;

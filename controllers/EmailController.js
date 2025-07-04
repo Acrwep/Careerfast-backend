@@ -29,7 +29,7 @@ const verifyOTP = async (request, response) => {
   try {
     const result = await EmailModel.verifyOTP(email, otp);
     if (result.success) {
-      response.json({ message: result.message });
+      response.status(200).send({ message: result.message });
     } else {
       response.status(400).json({ error: result.message });
     }

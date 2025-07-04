@@ -264,38 +264,6 @@ const JobsModel = {
     }
   },
 
-  // getJobPosts: async () => {
-  //   try {
-  //     const query = `SELECT
-  //                       id,
-  //                       company_name,
-  //                       company_logo,
-  //                       job_title,
-  //                       job_nature,
-  //                       duration_period,
-  //                       workplace_type,
-  //                       work_location,
-  //                       job_category,
-  //                       skills,
-  //                       experience_type,
-  //                       experience_required,
-  //                       salary_type,
-  //                       salary_figure,
-  //                       diversity_hiring,
-  //                       benefits,
-  //                       job_description,
-  //                       openings,
-  //                       working_days,
-  //                       created_at
-  //                   FROM
-  //                       job_post`;
-  //     const [posts] = await pool.query(query);
-  //     return posts;
-  //   } catch (error) {
-  //     throw new Error(error.message);
-  //   }
-  // },
-
   getJobPosts: async (filters = {}) => {
     try {
       let query = `SELECT
@@ -436,6 +404,17 @@ const JobsModel = {
         id
       );
       return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getExperienceRange: async () => {
+    try {
+      const [range] = await pool.query(
+        `SELECT id, display_text, sort_order FROM experience_range WHERE is_active = 1 ORDER BY sort_order`
+      );
+      return range;
     } catch (error) {
       throw new Error(error.message);
     }

@@ -300,7 +300,6 @@ const getJobPosts = async (request, response) => {
     end_date: request.body.end_date,
     salary_sort: request.body.salary_sort,
   };
-  console.log("fff", filters);
 
   try {
     const posts = await JobsModel.getJobPosts(filters);
@@ -332,6 +331,21 @@ const registrationClose = async (request, response) => {
   }
 };
 
+const getExperienceRange = async (request, response) => {
+  try {
+    const range = await JobsModel.getExperienceRange();
+    response.status(200).send({
+      message: "Experience range get successfully",
+      data: range,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching experience range",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -350,4 +364,5 @@ module.exports = {
   getJobCategories,
   getJobPosts,
   registrationClose,
+  getExperienceRange,
 };

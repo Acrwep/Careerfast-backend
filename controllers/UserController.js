@@ -127,10 +127,93 @@ const forgotPassword = async (request, response) => {
   }
 };
 
+const insertProfile = async (request, response) => {
+  const {
+    profile_image,
+    user_id,
+    country,
+    state,
+    city,
+    pincode,
+    address,
+    experience_type,
+    total_years,
+    total_months,
+    job_title,
+    company_name,
+    designation,
+    start_date,
+    end_date,
+    currently_working,
+    skills,
+    is_email_verified,
+  } = request.body;
+
+  if (
+    !profile_image ||
+    !user_id ||
+    !country ||
+    !state ||
+    !city ||
+    !pincode ||
+    !address ||
+    !experience_type ||
+    !skills
+  ) {
+    return response.status(400).json({
+      message: "Missing required fields",
+      required: [
+        "profile_image",
+        "user_id",
+        "country",
+        "state",
+        "city",
+        "pincode",
+        "address",
+        "experience_type",
+        "skills",
+      ],
+    });
+  }
+  try {
+    const result = await userModel.insertProfile(
+      profile_image,
+      user_id,
+      country,
+      state,
+      city,
+      pincode,
+      address,
+      experience_type,
+      total_years,
+      total_months,
+      job_title,
+      company_name,
+      designation,
+      start_date,
+      end_date,
+      currently_working,
+      skills,
+      is_email_verified
+    );
+
+    response.status(201).json({
+      message: "Profile inserted successfully!",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while inserting profile",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
   updateUser,
   deleteUser,
   forgotPassword,
+  insertProfile,
 };

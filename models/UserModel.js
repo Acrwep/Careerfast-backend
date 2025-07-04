@@ -49,7 +49,15 @@ const UserModel = {
         organization_type_id,
         role_id,
       ]);
-      return user.affectedRows;
+      let result;
+      if (user.affectedRows > 0) {
+        result = await pool.query(
+          `SELECT * FROM users WHERE email = ? AND phone_code = ? AND phone = ?`,
+          [email, phone_code, phone]
+        );
+      }
+
+      return result;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -83,14 +91,82 @@ const UserModel = {
 
   forgotPassword: async (email, password) => {
     try {
+      console.log(email, password);
+
       const hashedPassword = await hashPassword(password);
+      console.log(hashedPassword);
+
       const [result] = await pool.query(
         `UPDATE users SET password = ? WHERE email = ?`,
-        [email, hashedPassword]
+        [hashedPassword, email]
       );
+      console.log(result);
+
       return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);
+    }
+  },
+
+  insertProfile: async (
+    profile_image,
+    user_id,
+    country,
+    state,
+    city,
+    pincode,
+    address,
+    experience_type,
+    total_years,
+    total_months,
+    job_title,
+    company_name,
+    designation,
+    start_date,
+    end_date,
+    currently_working,
+    skills,
+    is_email_verified
+  ) => {
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      // Update profile image
+      const [personal] = await conn.query(
+        `UPDATE users SET profile_image = ?, is_email_verified = ? WHERE id = ?`,
+        [profile_image, is_email_verified, user_id]
+      );
+
+      // insert user address
+      const [address_result] = await conn.query(
+        `INSERT INTO user_address (user_id, address1, city, state, country, pincode, created_date) VALUES(?, ?, ?, ?, ?, ?, ?)`,
+        [user_id, address, city, state, country, pincode, new Date()]
+      );
+
+      // Insert user professional
+      const [professional] = await conn.query(
+        `INSERT INTO user_professional (user_id, experince_type, total_years, total_months, job_title, company_name, designation, start_date, end_date, currently_working, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          user_id,
+          experience_type,
+          total_years,
+          total_months,
+          job_title,
+          company_name,
+          designation,
+          start_date,
+          end_date,
+          currently_working,
+          JSON.stringify(skills),
+        ]
+      );
+
+      await conn.commit();
+    } catch (error) {
+      await conn.rollback();
+      throw new Error(error.message);
+    } finally {
+      conn.release();
     }
   },
 };
