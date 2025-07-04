@@ -457,6 +457,78 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  insertProjects: async (user_id, projects) => {
+    try {
+      if (projects.length > 0) {
+        projects.map(async (p) => {
+          const projectQuery = `INSERT INTO user_projects(
+                                    user_id,
+                                    company_name,
+                                    project_title,
+                                    project_type,
+                                    start_date,
+                                    end_date,
+                                    description
+                                ) VALUES(?, ?, ?, ?, ?, ?, ?)`;
+          const projectValue = [
+            user_id,
+            p.company_name,
+            p.project_title,
+            p.project_type,
+            p.start_date,
+            p.end_date,
+            p.description,
+          ];
+
+          await pool.query(projectQuery, projectValue);
+        });
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateProject: async (
+    company_name,
+    project_title,
+    project_type,
+    start_date,
+    end_date,
+    description,
+    id
+  ) => {
+    try {
+      const updateQuery = `UPDATE user_projects SET
+                              company_name = ?,
+                              project_title = ?,
+                              project_type = ?,
+                              start_date = ?,
+                              end_date = ?,
+                              description = ?
+                          WHERE id = ?`;
+      const [result] = await pool.query(updateQuery, [
+        company_name,
+        project_title,
+        project_type,
+        start_date,
+        end_date,
+        description,
+        id,
+      ]);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  // updateResume: async(resumeBase64) => {
+  //   try {
+  //     const [updateResume] =
+  //   } catch (error) {
+  //     throw new Error(error.message);
+  //   }
+  // }
 };
 
 module.exports = JobsModel;

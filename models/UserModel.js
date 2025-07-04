@@ -161,12 +161,37 @@ const UserModel = {
         ]
       );
 
+      const [social_links] = await conn.query(
+        `INSERT INTO user_social_links (user_id) VALUES(?)`,
+        user_id
+      );
+
       await conn.commit();
     } catch (error) {
       await conn.rollback();
       throw new Error(error.message);
     } finally {
       conn.release();
+    }
+  },
+
+  updateSocialLinks: async (
+    linkedin,
+    facebook,
+    instagram,
+    twitter,
+    dribble,
+    behance,
+    user_id
+  ) => {
+    try {
+      const [result] = await pool.query(
+        `UPDATE user_social_links SET linkedin = ?, facebook = ?, instagram = ?, twitter = ?, dribble = ?, behance = ? WHERE user_id = ?`,
+        [linkedin, facebook, instagram, twitter, dribble, behance, user_id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
     }
   },
 };

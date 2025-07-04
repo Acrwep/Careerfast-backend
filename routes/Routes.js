@@ -72,5 +72,8 @@ router.post("/verifyOTP", EmailController.verifyOTP);
 router.put("/forgotPassword", userController.forgotPassword);
 router.post("/insertProfile", userController.insertProfile);
 router.get("/getExperienceRange", JobsController.getExperienceRange);
+router.put("/updateSocialLinks", verifyToken, userController.updateSocialLinks);
+router.post("/insertProjects", verifyToken, JobsController.insertProjects);
+router.put("/updateProject", verifyToken, JobsController.updateProject);
 
 module.exports = router;

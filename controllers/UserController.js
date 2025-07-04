@@ -1,3 +1,4 @@
+const { pool } = require("../config/dbConfig");
 const userModel = require("../models/UserModel");
 const { response, request } = require("express");
 
@@ -209,6 +210,31 @@ const insertProfile = async (request, response) => {
   }
 };
 
+const updateSocialLinks = async (request, response) => {
+  const { linkedin, facebook, instagram, twitter, dribble, behance, user_id } =
+    request.body;
+  try {
+    const result = await userModel.updateSocialLinks(
+      linkedin,
+      facebook,
+      instagram,
+      twitter,
+      dribble,
+      behance,
+      user_id
+    );
+    response.status(200).json({
+      message: "Social links updated successfully!",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating social links",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -216,4 +242,5 @@ module.exports = {
   deleteUser,
   forgotPassword,
   insertProfile,
+  updateSocialLinks,
 };

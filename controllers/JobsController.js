@@ -369,6 +369,58 @@ const getExperienceRange = async (request, response) => {
   }
 };
 
+const insertProjects = async (request, response) => {
+  const { user_id, projects } = request.body;
+  if (!user_id || !projects?.length) {
+    return res
+      .status(400)
+      .json({ error: "user_id and projects array are required" });
+  }
+  try {
+    await userModel.insertProjects(user_id, projects);
+    response.status(201).json({
+      message: "Projects inserted successfully!",
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while inserting projects",
+      details: error.message,
+    });
+  }
+};
+
+const updateProject = async (request, response) => {
+  const {
+    company_name,
+    project_title,
+    project_type,
+    start_date,
+    end_date,
+    description,
+    id,
+  } = request.body;
+  try {
+    const result = await JobsModel.updateProject(
+      company_name,
+      project_title,
+      project_type,
+      start_date,
+      end_date,
+      description,
+      id
+    );
+    response.status(200).send({
+      message: "Updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -389,4 +441,6 @@ module.exports = {
   getJobPosts,
   registrationClose,
   getExperienceRange,
+  insertProjects,
+  updateProject,
 };
