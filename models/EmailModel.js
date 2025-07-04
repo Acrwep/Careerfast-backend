@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const pool = require("../config/dbConfig");
 
 // Generate a 6-digit OTP
 const generateOTP = () => {
@@ -19,6 +20,16 @@ const otpStorage = new Map();
 
 const sendVerificationEmail = async (email) => {
   try {
+    const [is_email_exists] = await pool.query(
+      `SELECT id FROM users WHERE email = ?`,
+      [email]
+    );
+    console.log("eee", is_email_exists);
+
+    if (is_email_exists.length == 0) {
+      throw new Error("The given email is not exists in the database");
+    }
+
     const otp = generateOTP();
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -37,8 +48,7 @@ const sendVerificationEmail = async (email) => {
     await transporter.sendMail(mailOptions);
     return { success: true, message: "OTP sent successfully" };
   } catch (error) {
-    console.error("Error sending email:", error);
-    return { success: false, message: "Failed to send OTP" };
+    throw new Error(error.message);
   }
 };
 
