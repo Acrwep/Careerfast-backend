@@ -248,6 +248,24 @@ const jobPosting = async (request, response) => {
   }
 };
 
+const applyForJob = async (request, response) => {
+  const { postId, userId, answers } = request.body;
+
+  const formattedQuestions = Array.isArray(answers) ? answers : [answers];
+
+  try {
+    await JobsModel.applyForJob(postId, userId, formattedQuestions);
+    return response.status(200).send({
+      message: "Job applied successfully",
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error posting job",
+      details: error.message,
+    });
+  }
+};
+
 const getYears = async (request, response) => {
   try {
     const years = await JobsModel.getYears();
@@ -364,6 +382,7 @@ module.exports = {
   getEligibility,
   getSalaryType,
   jobPosting,
+  applyForJob,
   getYears,
   getSkills,
   getJobCategories,

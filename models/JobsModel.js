@@ -239,6 +239,27 @@ const JobsModel = {
     }
   },
 
+  applyForJob: async (postId, userId, answers) => {
+    try {
+      const query = `INSERT INTO applied_jobs(postId,userId)VALUES(?,?)`;
+      const values = [postId, userId];
+
+      const [result] = await pool.query(query, values);
+
+      if (answers.length >= 1) {
+        answers.map(async (item) => {
+          const query = `INSERT INTO job_post_answers (postId,userId,questionId,answer) VALUES(?,?,?,?)`;
+          const values = [postId, userId, item.questionId, item.answer];
+
+          await pool.query(query, values);
+        });
+      }
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
   getYears: async () => {
     try {
       const [years] = await pool.query(
