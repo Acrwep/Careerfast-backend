@@ -185,13 +185,15 @@ const jobPosting = async (request, response) => {
     experience_type,
     experience_required,
     salary_type,
-    salary_figure,
+    min_salary,
+    max_salary,
     diversity_hiring,
     benefits,
     job_description,
     openings,
     working_days,
     created_at,
+    questions,
   } = request.body;
   const formattedDuration = Array.isArray(duration_period)
     ? duration_period
@@ -207,6 +209,7 @@ const jobPosting = async (request, response) => {
     ? diversity_hiring
     : [diversity_hiring];
   const formattedBenefits = Array.isArray(benefits) ? benefits : [benefits];
+  const formatQuestions = Array.isArray(questions) ? questions : [questions];
 
   try {
     const result = await JobsModel.jobPosting(
@@ -223,13 +226,15 @@ const jobPosting = async (request, response) => {
       experience_type,
       formattedExpReq,
       salary_type,
-      salary_figure,
+      min_salary,
+      max_salary,
       formattedDiversity,
       formattedBenefits,
       job_description,
       openings,
       working_days,
-      created_at
+      created_at,
+      formatQuestions
     );
     return response.status(201).send({
       message: "Job posted successfully",

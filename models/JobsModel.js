@@ -160,13 +160,15 @@ const JobsModel = {
     experience_type,
     experience_required,
     salary_type,
-    salary_figure,
+    min_salary,
+    max_salary,
     diversity_hiring,
     benefits,
     job_description,
     openings,
     working_days,
-    created_at
+    created_at,
+    questions
   ) => {
     try {
       const query = `INSERT INTO job_post(
@@ -183,7 +185,8 @@ const JobsModel = {
                         experience_type,
                         experience_required,
                         salary_type,
-                        salary_figure,
+                        min_salary,
+                        max_salary,
                         diversity_hiring,
                         benefits,
                         job_description,
@@ -191,7 +194,7 @@ const JobsModel = {
                         working_days,
                         created_at
                     )
-                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
       const values = [
         user_id,
         company_name,
@@ -206,7 +209,8 @@ const JobsModel = {
         experience_type,
         JSON.stringify(experience_required),
         salary_type,
-        salary_figure,
+        min_salary,
+        max_salary,
         JSON.stringify(diversity_hiring),
         JSON.stringify(benefits),
         job_description,
@@ -214,8 +218,21 @@ const JobsModel = {
         working_days,
         created_at,
       ];
-
+      console.log("questions", questions);
       const [result] = await pool.query(query, values);
+
+      const lastJobPostId = result?.insertId;
+      //insert post questions
+
+      if (questions.length >= 1) {
+        questions.map(async (q) => {
+          const postQuestionQuery = `INSERT INTO job_post_questions(post_id,question,isrequired) VALUES(?,?,?)`;
+          const postQuestionsValues = [lastJobPostId, q.question, q.isrequired];
+
+          await pool.query(postQuestionQuery, postQuestionsValues);
+        });
+      }
+
       return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);
