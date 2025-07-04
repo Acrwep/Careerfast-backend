@@ -273,5 +273,5 @@ module.exports = {
   forgotPassword,
   insertProfile,
   getUserAppliedJobs,
-  updateSocialLinks
+  updateSocialLinks,
 };
