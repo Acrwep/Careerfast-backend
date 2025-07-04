@@ -260,6 +260,105 @@ const JobsModel = {
     }
   },
 
+  getJobAppliedCandidates: async (post_id) => {
+    const query = `
+    SELECT 
+      job_post.id AS postId,
+      job_post.job_title,
+      job_post.company_name,
+      job_post.job_nature,
+      job_post.duration_period,
+      job_post.workplace_type,
+      job_post.work_location,
+      job_post.job_category,
+      job_post.skills,
+      job_post.experience_type,
+      job_post.experience_required,
+      job_post.salary_type,
+      job_post.min_salary,
+      job_post.max_salary,
+      job_post.diversity_hiring,
+      job_post.benefits,
+      job_post.job_description,
+      job_post.openings,
+      job_post.working_days,
+      job_post.created_at AS post_created_at,
+      users.id AS user_id,
+      users.first_name,
+      users.last_name,
+      users.email,
+      users.phone_code,
+      users.phone,
+      users.profile_image
+    FROM job_post
+    LEFT JOIN applied_jobs ON applied_jobs.postId = job_post.id
+    LEFT JOIN users ON users.id = applied_jobs.userId
+    WHERE job_post.id = ?
+  `;
+
+    const values = [post_id];
+
+    try {
+      const [rows] = await pool.query(query, values);
+
+      if (rows.length === 0) return null;
+
+      const post_questions_query = `SELECT * FROM job_post_questions WHERE post_id= ?`;
+      const post_questions_values = [post_id];
+
+      const [post_questions] = await pool.query(
+        post_questions_query,
+        post_questions_values
+      );
+
+      const post_answers_query = `SELECT * FROM job_post_answers WHERE postId= ?`;
+      const post_answers_values = [post_id];
+
+      const [post_answers] = await pool.query(
+        post_answers_query,
+        post_answers_values
+      );
+
+      const filterQuestionAnswerList = post_questions.flatMap((q) => {
+        return post_answers
+          .filter((a) => a.questionId === q.id)
+          .map((a) => ({
+            question: q.question,
+            answer: a.answer,
+            user_id: a.userId,
+          }));
+      });
+
+      const postData = rows.map((item) => {
+        return {
+          ...item,
+          duration_period: JSON.parse(item.duration_period),
+          skills: JSON.parse(item.skills),
+          experience_required: JSON.parse(item.experience_required),
+          diversity_hiring: JSON.parse(item.diversity_hiring),
+          job_category: JSON.parse(item.job_category),
+          benefits: JSON.parse(item.benefits),
+          users: rows
+            .filter((row) => row.user_id) // filter out nulls if no users applied
+            .map((row) => ({
+              id: row.user_id,
+              first_name: row.first_name,
+              last_name: row.last_name,
+              email: row.email,
+              phone: row.phone,
+              candidateAnswersForRecruiterQuestions:
+                filterQuestionAnswerList.filter(
+                  (f) => f.user_id === row.user_id
+                ),
+            })),
+        };
+      });
+      return postData;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
   getYears: async () => {
     try {
       const [years] = await pool.query(

@@ -194,6 +194,26 @@ const UserModel = {
       throw new Error(error.message);
     }
   },
+
+  getUserAppliedJobs: async (userId) => {
+    const query = `
+      SELECT job_post.*,
+      CASE WHEN job_post.is_closed = 1 THEN 1 ELSE 0 END AS is_closed
+      FROM applied_jobs
+      JOIN job_post ON applied_jobs.postId = job_post.id
+      WHERE applied_jobs.userId = ?
+    `;
+
+    const values = [userId];
+
+    try {
+      const [result] = await pool.query(query, values);
+
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 // 🔐 Encrypt (Hash) Password

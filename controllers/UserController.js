@@ -210,7 +210,7 @@ const insertProfile = async (request, response) => {
   }
 };
 
-const updateSocialLinks = async (request, response) => {
+  const updateSocialLinks = async (request, response) => {
   const { linkedin, facebook, instagram, twitter, dribble, behance, user_id } =
     request.body;
   try {
@@ -233,6 +233,36 @@ const updateSocialLinks = async (request, response) => {
       details: error.message,
     });
   }
+},
+
+const getUserAppliedJobs = async (request, response) => {
+  const { userId } = request.query;
+
+  try {
+    const result = await userModel.getUserAppliedJobs(userId);
+
+    const formattedResult = result.map((item) => {
+      return {
+        ...item,
+        duration_period: JSON.parse(item.duration_period),
+        skills: JSON.parse(item.skills),
+        experience_required: JSON.parse(item.experience_required),
+        diversity_hiring: JSON.parse(item.diversity_hiring),
+        job_category: JSON.parse(item.job_category),
+        benefits: JSON.parse(item.benefits),
+      };
+    });
+
+    return response.status(200).send({
+      message: "applied jobs fetched successfully",
+      data: formattedResult,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while get applied job post",
+      details: error.message,
+    });
+  }
 };
 
 module.exports = {
@@ -242,5 +272,6 @@ module.exports = {
   deleteUser,
   forgotPassword,
   insertProfile,
-  updateSocialLinks,
+  getUserAppliedJobs,
+  updateSocialLinks
 };
