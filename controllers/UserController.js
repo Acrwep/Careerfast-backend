@@ -210,7 +210,7 @@ const insertProfile = async (request, response) => {
   }
 };
 
-  const updateSocialLinks = async (request, response) => {
+const updateSocialLinks = async (request, response) => {
   const { linkedin, facebook, instagram, twitter, dribble, behance, user_id } =
     request.body;
   try {
@@ -233,7 +233,7 @@ const insertProfile = async (request, response) => {
       details: error.message,
     });
   }
-},
+};
 
 const getUserAppliedJobs = async (request, response) => {
   const { userId } = request.query;
