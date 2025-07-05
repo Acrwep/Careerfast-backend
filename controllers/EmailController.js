@@ -41,7 +41,28 @@ const verifyOTP = async (request, response) => {
   }
 };
 
+const VerifyEmail = async (request, response) => {
+  const { email } = request.body;
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+  try {
+    const result = await EmailModel.VerifyEmail(email);
+    if (result.success) {
+      response.json({ message: result.message });
+    } else {
+      response.status(500).json({ error: result.message });
+    }
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while sending email",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   sendVerificationEmail,
   verifyOTP,
+  VerifyEmail,
 };

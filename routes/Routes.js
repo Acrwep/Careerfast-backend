@@ -80,5 +80,5 @@ router.get("/getExperienceRange", JobsController.getExperienceRange);
 router.put("/updateSocialLinks", verifyToken, userController.updateSocialLinks);
 router.post("/insertProjects", verifyToken, JobsController.insertProjects);
 router.put("/updateProject", verifyToken, JobsController.updateProject);
-
+router.post("/VerifyEmail", EmailController.VerifyEmail);
 module.exports = router;

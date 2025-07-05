@@ -72,4 +72,28 @@ const verifyOTP = (email, userOTP) => {
   return { success: false, message: "Invalid OTP" };
 };
 
-module.exports = { sendVerificationEmail, verifyOTP };
+const VerifyEmail = async (email) => {
+  try {
+    const otp = generateOTP();
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your Email Verification OTP",
+      text: `Your OTP for email verification is: ${otp}`,
+      html: `<p>Your OTP for email verification is: <strong>${otp}</strong></p>`,
+    };
+
+    // Store OTP with expiration (5 minutes)
+    otpStorage.set(email, {
+      otp,
+      expiresAt: Date.now() + 300000, // 5 minutes
+    });
+
+    await transporter.sendMail(mailOptions);
+    return { success: true, message: "OTP sent successfully" };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+module.exports = { sendVerificationEmail, verifyOTP, VerifyEmail };
