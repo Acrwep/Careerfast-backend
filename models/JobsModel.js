@@ -621,13 +621,41 @@ const JobsModel = {
     }
   },
 
-  // updateResume: async(resumeBase64) => {
-  //   try {
-  //     const [updateResume] =
-  //   } catch (error) {
-  //     throw new Error(error.message);
-  //   }
-  // }
+  updateResume: async (resumeBase64, id) => {
+    try {
+      const [updateResume] = await pool.query(
+        `UPDATE users SET resume = ? WHERE id = ?`,
+        [resumeBase64, id]
+      );
+      return updateResume.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateSkills: async (skills, user_id) => {
+    try {
+      const [skill] = await pool.query(
+        `UPDATE users SET skills = ? WHERE id = ?`,
+        [JSON.stringify(skills), user_id]
+      );
+      return skill.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateAbout: async (about, user_id) => {
+    try {
+      const [result] = await pool.query(
+        `UPDATE users SET about = ? WHERE id = ?`,
+        [about, user_id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

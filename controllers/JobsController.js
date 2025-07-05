@@ -438,6 +438,55 @@ const updateProject = async (request, response) => {
   }
 };
 
+const updateResume = async (request, response) => {
+  const { resume, id } = request.body;
+  try {
+    const result = await JobsModel.updateResume(resume, id);
+    response.status(200).send({
+      message: "Updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating",
+      details: error.message,
+    });
+  }
+};
+
+const updateSkills = async (request, response) => {
+  const { skills, user_id } = request.body;
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  try {
+    const result = await JobsModel.updateSkills(formattedSkills, user_id);
+    response.status(200).send({
+      message: "Updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating",
+      details: error.message,
+    });
+  }
+};
+
+const updateAbout = async (request, response) => {
+  const { about, id } = request.body;
+  try {
+    const result = await JobsModel.updateAbout(about, id);
+    response.status(200).send({
+      message: "Updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -461,4 +510,7 @@ module.exports = {
   getExperienceRange,
   insertProjects,
   updateProject,
+  updateResume,
+  updateSkills,
+  updateAbout,
 };

@@ -81,4 +81,7 @@ router.put("/updateSocialLinks", verifyToken, userController.updateSocialLinks);
 router.post("/insertProjects", verifyToken, JobsController.insertProjects);
 router.put("/updateProject", verifyToken, JobsController.updateProject);
 router.post("/VerifyEmail", EmailController.VerifyEmail);
+router.put("/updateResume", verifyToken, JobsController.updateResume);
+router.put("/updateSkills", verifyToken, JobsController.updateSkills);
+router.put("/updateAbout", verifyToken, JobsController.updateAbout);
 module.exports = router;

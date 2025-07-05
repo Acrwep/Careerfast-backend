@@ -91,8 +91,6 @@ const UserModel = {
 
   forgotPassword: async (email, password) => {
     try {
-      console.log(email, password);
-
       const hashedPassword = await hashPassword(password);
       console.log(hashedPassword);
 
