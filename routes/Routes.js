@@ -18,6 +18,11 @@ router.post("/createUser", userController.createUser);
 router.put("/updateUser/:id", userController.updateUser);
 router.delete("/deleteUser/:id", userController.deleteUser);
 router.get("/userAppliedJobs", userController.getUserAppliedJobs);
+router.put(
+  "/updateUserAppliedJobStatus",
+  userController.updateUserAppliedJobStatus
+);
+router.get("/getUserJobPostStatus", userController.getUserJobPostStatus);
 // Role module APIs
 router.get("/getRoles", RoleController.getRoles);
 
@@ -64,6 +69,11 @@ router.get(
   "/getJobAppliedCandidates",
   verifyToken,
   JobsController.getJobAppliedCandidates
+);
+router.get(
+  "/getJobPostByUserId",
+  verifyToken,
+  JobsController.getJobPostByUserId
 );
 router.get("/getYears", JobsController.getYears);
 router.get("/getSkills", JobsController.getSkills);

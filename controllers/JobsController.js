@@ -260,7 +260,7 @@ const applyForJob = async (request, response) => {
     });
   } catch (error) {
     response.status(500).send({
-      message: "Error posting job",
+      message: "Error while applying",
       details: error.message,
     });
   }
@@ -274,6 +274,35 @@ const getJobAppliedCandidates = async (request, response) => {
     return response.status(200).send({
       message: "job applied candidates fetched successfully",
       data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while getting applied candidates",
+      details: error.message,
+    });
+  }
+};
+
+const getJobPostByUserId = async (request, response) => {
+  const { user_id } = request.query;
+
+  try {
+    const result = await JobsModel.getJobPostByUserId(user_id);
+
+    const formatResult = result.map((item) => {
+      return {
+        ...item,
+        duration_period: JSON.parse(item.duration_period),
+        skills: JSON.parse(item.skills),
+        experience_required: JSON.parse(item.experience_required),
+        diversity_hiring: JSON.parse(item.diversity_hiring),
+        job_category: JSON.parse(item.job_category),
+        benefits: JSON.parse(item.benefits),
+      };
+    });
+    return response.status(200).send({
+      message: "jobpost fetched successfully",
+      data: formatResult,
     });
   } catch (error) {
     response.status(500).send({
@@ -513,4 +542,5 @@ module.exports = {
   updateResume,
   updateSkills,
   updateAbout,
+  getJobPostByUserId,
 };

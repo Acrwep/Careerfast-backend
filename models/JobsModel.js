@@ -359,6 +359,28 @@ const JobsModel = {
     }
   },
 
+  getJobPostByUserId: async (user_id) => {
+    const query = `
+  SELECT 
+    *, 
+    CASE 
+      WHEN job_post.is_closed = 1 THEN 1 
+      ELSE 0 
+    END AS is_closed 
+  FROM job_post 
+  WHERE user_id = ?;
+`;
+
+    const values = [user_id];
+
+    try {
+      const [result] = await pool.query(query, values);
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
   getYears: async () => {
     try {
       const [years] = await pool.query(

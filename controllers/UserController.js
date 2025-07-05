@@ -1,4 +1,5 @@
 const { pool } = require("../config/dbConfig");
+const UserModel = require("../models/UserModel");
 const userModel = require("../models/UserModel");
 const { response, request } = require("express");
 
@@ -223,9 +224,10 @@ const getUserAppliedJobs = async (request, response) => {
   try {
     const result = await userModel.getUserAppliedJobs(userId);
 
-    const formattedResult = result.map((item) => {
+    const formattedResult = result.map(({ id, applied_job_id, ...item }) => {
       return {
         ...item,
+        id: applied_job_id,
         duration_period: JSON.parse(item.duration_period),
         skills: JSON.parse(item.skills),
         experience_required: JSON.parse(item.experience_required),
@@ -247,6 +249,42 @@ const getUserAppliedJobs = async (request, response) => {
   }
 };
 
+const updateUserAppliedJobStatus = async (request, response) => {
+  const { post_id, user_id, status } = request.body;
+
+  try {
+    const result = await UserModel.updateUserAppliedJobStatus(
+      post_id,
+      user_id,
+      status
+    );
+    return response
+      .status(200)
+      .send({ message: "Status changed", data: result });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while update applied job status",
+      details: error.message,
+    });
+  }
+};
+
+const getUserJobPostStatus = async (request, response) => {
+  const { applied_job_id } = request.query;
+
+  try {
+    const result = await UserModel.getUserJobPostStatus(applied_job_id);
+    return response
+      .status(200)
+      .send({ message: "job status get successfully", data: result });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while get applied job status",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -255,5 +293,7 @@ module.exports = {
   forgotPassword,
   insertProfile,
   getUserAppliedJobs,
+  updateUserAppliedJobStatus,
+  getUserJobPostStatus,
   updateSocialLinks,
 };

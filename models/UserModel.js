@@ -190,18 +190,54 @@ const UserModel = {
 
   getUserAppliedJobs: async (userId) => {
     const query = `
-      SELECT job_post.*,
-      CASE WHEN job_post.is_closed = 1 THEN 1 ELSE 0 END AS is_closed
-      FROM applied_jobs
-      JOIN job_post ON applied_jobs.postId = job_post.id
-      WHERE applied_jobs.userId = ?
-    `;
+  SELECT 
+    applied_jobs.id AS applied_job_id,
+    job_post.id AS post_id,
+    job_post.*,
+    CASE WHEN job_post.is_closed = 1 THEN 1 ELSE 0 END AS is_closed
+  FROM applied_jobs
+  JOIN job_post ON applied_jobs.postId = job_post.id
+  WHERE applied_jobs.userId = ?
+`;
 
     const values = [userId];
 
     try {
       const [result] = await pool.query(query, values);
 
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateUserAppliedJobStatus: async (post_id, user_id, status) => {
+    const get_appliedjob_query = `SELECT * FROM applied_jobs WHERE postId = ? AND userId = ?`;
+    const appliedjob_value = [post_id, user_id];
+
+    try {
+      const [appliedjob_data] = await pool.query(
+        get_appliedjob_query,
+        appliedjob_value
+      );
+      const appliedjob_id = appliedjob_data[0].id;
+
+      const query = `INSERT INTO applied_job_status_history (applied_job_id, status) VALUES(?,?)`;
+      const values = [appliedjob_id, status];
+
+      const [result] = await pool.query(query, values);
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getUserJobPostStatus: async (applied_job_id) => {
+    const query = `SELECT * FROM applied_job_status_history WHERE applied_job_id = ?`;
+    const values = [applied_job_id];
+
+    try {
+      const [result] = await pool.query(query, values);
       return result;
     } catch (error) {
       throw new Error(error.message);
