@@ -116,16 +116,7 @@ const UserModel = {
     city,
     pincode,
     address,
-    experience_type,
-    total_years,
-    total_months,
-    job_title,
-    company_name,
-    designation,
-    start_date,
-    end_date,
-    currently_working,
-    skills,
+    professional,
     is_email_verified
   ) => {
     const conn = await pool.getConnection();
@@ -143,23 +134,27 @@ const UserModel = {
         [user_id, address, city, state, country, pincode, new Date()]
       );
 
-      // Insert user professional
-      const [professional] = await conn.query(
-        `INSERT INTO user_professional (user_id, experince_type, total_years, total_months, job_title, company_name, designation, start_date, end_date, currently_working, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          user_id,
-          experience_type,
-          total_years,
-          total_months,
-          job_title,
-          company_name,
-          designation,
-          start_date,
-          end_date,
-          currently_working,
-          JSON.stringify(skills),
-        ]
-      );
+      if (professional.length > 0) {
+        professional.map(async (p) => {
+          // Insert user professional
+          await conn.query(
+            `INSERT INTO user_professional (user_id, experince_type, total_years, total_months, job_title, company_name, designation, start_date, end_date, currently_working, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              user_id,
+              p.experience_type,
+              p.total_years,
+              p.total_months,
+              p.job_title,
+              p.company_name,
+              p.designation,
+              p.start_date,
+              p.end_date,
+              p.currently_working,
+              JSON.stringify(p.skills),
+            ]
+          );
+        });
+      }
 
       const [social_links] = await conn.query(
         `INSERT INTO user_social_links (user_id) VALUES(?)`,

@@ -137,16 +137,17 @@ const insertProfile = async (request, response) => {
     city,
     pincode,
     address,
-    experience_type,
-    total_years,
-    total_months,
-    job_title,
-    company_name,
-    designation,
-    start_date,
-    end_date,
-    currently_working,
-    skills,
+    // experience_type,
+    // total_years,
+    // total_months,
+    // job_title,
+    // company_name,
+    // designation,
+    // start_date,
+    // end_date,
+    // currently_working,
+    // skills,
+    professional,
     is_email_verified,
   } = request.body;
 
@@ -157,9 +158,7 @@ const insertProfile = async (request, response) => {
     !state ||
     !city ||
     !pincode ||
-    !address ||
-    !experience_type ||
-    !skills
+    !address
   ) {
     return response.status(400).json({
       message: "Missing required fields",
@@ -171,11 +170,13 @@ const insertProfile = async (request, response) => {
         "city",
         "pincode",
         "address",
-        "experience_type",
-        "skills",
       ],
     });
   }
+  const formattedProfessional = Array.isArray(professional)
+    ? professional
+    : [professional];
+
   try {
     const result = await userModel.insertProfile(
       profile_image,
@@ -185,16 +186,7 @@ const insertProfile = async (request, response) => {
       city,
       pincode,
       address,
-      experience_type,
-      total_years,
-      total_months,
-      job_title,
-      company_name,
-      designation,
-      start_date,
-      end_date,
-      currently_working,
-      skills,
+      formattedProfessional,
       is_email_verified
     );
 
