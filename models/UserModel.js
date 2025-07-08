@@ -115,15 +115,16 @@ const UserModel = {
     pincode,
     address,
     professional,
-    is_email_verified
+    is_email_verified,
+    user_type
   ) => {
     const conn = await pool.getConnection();
     try {
       await conn.beginTransaction();
       // Update profile image
       const [personal] = await conn.query(
-        `UPDATE users SET profile_image = ?, is_email_verified = ? WHERE id = ?`,
-        [profile_image, is_email_verified, user_id]
+        `UPDATE users SET profile_image = ?, is_email_verified = ?, user_type = ? WHERE id = ?`,
+        [profile_image, is_email_verified, user_type, user_id]
       );
 
       // insert user address
@@ -238,6 +239,17 @@ const UserModel = {
 
     try {
       const [result] = await pool.query(query, values);
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getUserType: async () => {
+    try {
+      const [result] = await pool.query(
+        `SELECT id, name FROM user_type WHERE is_deleted = 0 ORDER BY name`
+      );
       return result;
     } catch (error) {
       throw new Error(error.message);

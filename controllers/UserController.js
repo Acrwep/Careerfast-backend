@@ -140,6 +140,7 @@ const insertProfile = async (request, response) => {
     address,
     professional,
     is_email_verified,
+    user_type,
   } = request.body;
 
   if (
@@ -149,7 +150,8 @@ const insertProfile = async (request, response) => {
     !state ||
     !city ||
     !pincode ||
-    !address
+    !address ||
+    !user_type
   ) {
     return response.status(400).json({
       message: "Missing required fields",
@@ -161,6 +163,7 @@ const insertProfile = async (request, response) => {
         "city",
         "pincode",
         "address",
+        "user_type",
       ],
     });
   }
@@ -178,7 +181,8 @@ const insertProfile = async (request, response) => {
       pincode,
       address,
       formattedProfessional,
-      is_email_verified
+      is_email_verified,
+      user_type
     );
 
     response.status(201).json({
@@ -285,6 +289,21 @@ const getUserJobPostStatus = async (request, response) => {
   }
 };
 
+const getUserType = async (request, response) => {
+  try {
+    const result = await userModel.getUserType();
+    response.status(200).send({
+      message: "User types fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while fetching user types",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -296,4 +315,5 @@ module.exports = {
   updateUserAppliedJobStatus,
   getUserJobPostStatus,
   updateSocialLinks,
+  getUserType,
 };

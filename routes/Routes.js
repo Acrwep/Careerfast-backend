@@ -94,4 +94,5 @@ router.post("/VerifyEmail", EmailController.VerifyEmail);
 router.put("/updateResume", verifyToken, JobsController.updateResume);
 router.put("/updateSkills", verifyToken, JobsController.updateSkills);
 router.put("/updateAbout", verifyToken, JobsController.updateAbout);
+router.get("/getUserType", userController.getUserType);
 module.exports = router;
