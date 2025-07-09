@@ -129,12 +129,12 @@ const getGender = async (request, response) => {
   try {
     const genders = await JobsModel.getGender();
     response.status(200).send({
-      message: "Benefits fetched successfully",
+      message: "Gender fetched successfully",
       data: genders,
     });
   } catch (error) {
     response.status(500).send({
-      message: "Error fetching benefits",
+      message: "Error fetching gender",
       details: error.message,
     });
   }
@@ -144,12 +144,12 @@ const getEligibility = async (request, response) => {
   try {
     const eligibility = await JobsModel.getEligibility();
     response.status(200).send({
-      message: "Benefits fetched successfully",
+      message: "Eligibility fetched successfully",
       data: eligibility,
     });
   } catch (error) {
     response.status(500).send({
-      message: "Error fetching benefits",
+      message: "Error fetching eligibility",
       details: error.message,
     });
   }
@@ -159,12 +159,12 @@ const getSalaryType = async (request, response) => {
   try {
     const salaryType = await JobsModel.getSalaryType();
     response.status(200).send({
-      message: "Benefits fetched successfully",
+      message: "Salary type fetched successfully",
       data: salaryType,
     });
   } catch (error) {
     response.status(500).send({
-      message: "Error fetching benefits",
+      message: "Error fetching salary type",
       details: error.message,
     });
   }
@@ -416,14 +416,25 @@ const getExperienceRange = async (request, response) => {
 };
 
 const insertProjects = async (request, response) => {
-  const { user_id, projects } = request.body;
-  if (!user_id || !projects?.length) {
-    return res
-      .status(400)
-      .json({ error: "user_id and projects array are required" });
-  }
+  const {
+    user_id,
+    company_name,
+    project_title,
+    project_type,
+    start_date,
+    end_date,
+    description,
+  } = request.body;
   try {
-    await userModel.insertProjects(user_id, projects);
+    await userModel.insertProjects(
+      user_id,
+      company_name,
+      project_title,
+      project_type,
+      start_date,
+      end_date,
+      description
+    );
     response.status(201).json({
       message: "Projects inserted successfully!",
     });

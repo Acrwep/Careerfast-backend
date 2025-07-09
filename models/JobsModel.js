@@ -579,11 +579,17 @@ const JobsModel = {
     }
   },
 
-  insertProjects: async (user_id, projects) => {
+  insertProjects: async (
+    user_id,
+    company_name,
+    project_title,
+    project_type,
+    start_date,
+    end_date,
+    description
+  ) => {
     try {
-      if (projects.length > 0) {
-        projects.map(async (p) => {
-          const projectQuery = `INSERT INTO user_projects(
+      const projectQuery = `INSERT INTO user_projects(
                                     user_id,
                                     company_name,
                                     project_title,
@@ -592,19 +598,17 @@ const JobsModel = {
                                     end_date,
                                     description
                                 ) VALUES(?, ?, ?, ?, ?, ?, ?)`;
-          const projectValue = [
-            user_id,
-            p.company_name,
-            p.project_title,
-            p.project_type,
-            p.start_date,
-            p.end_date,
-            p.description,
-          ];
+      const projectValue = [
+        user_id,
+        company_name,
+        project_title,
+        project_type,
+        start_date,
+        end_date,
+        description,
+      ];
 
-          await pool.query(projectQuery, projectValue);
-        });
-      }
+      await pool.query(projectQuery, projectValue);
     } catch (error) {
       throw new Error(error.message);
     }

@@ -304,6 +304,44 @@ const getUserType = async (request, response) => {
   }
 };
 
+const updateBasicDetails = async (request, response) => {
+  const {
+    first_name,
+    last_name,
+    gender,
+    user_type,
+    classes,
+    location,
+    course,
+    start_year,
+    end_year,
+    user_id,
+  } = request.body;
+  try {
+    const result = await userModel.updateBasicDetails(
+      first_name,
+      last_name,
+      gender,
+      user_type,
+      classes,
+      location,
+      course,
+      start_year,
+      end_year,
+      user_id
+    );
+    response.status(200).send({
+      message: "Updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while updating",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -316,4 +354,5 @@ module.exports = {
   getUserJobPostStatus,
   updateSocialLinks,
   getUserType,
+  updateBasicDetails,
 };

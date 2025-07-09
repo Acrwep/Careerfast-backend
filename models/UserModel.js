@@ -255,6 +255,84 @@ const UserModel = {
       throw new Error(error.message);
     }
   },
+
+  updateBasicDetails: async (
+    first_name,
+    last_name,
+    gender,
+    user_type,
+    classes,
+    location,
+    course,
+    start_year,
+    end_year,
+    user_id
+  ) => {
+    try {
+      const query = `UPDATE users SET first_name = ?, last_name = ?, gender = ?, user_type = ?, class = ?, location = ?, course = ?, start_year = ?, end_year = ? WHERE id = ?`;
+      const params = [
+        first_name,
+        last_name,
+        gender,
+        user_type,
+        classes,
+        location,
+        course,
+        start_year,
+        end_year,
+        user_id,
+      ];
+      const [result] = await pool.query(query, params);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateEducation: async (
+    qualification,
+    board,
+    course,
+    specialization,
+    college,
+    start_date,
+    end_date,
+    course_type,
+    percentage,
+    cgpa,
+    roll_number,
+    lateral_entry,
+    skills,
+    description,
+    user_id,
+    id
+  ) => {
+    try {
+      const updateQuery = `UPDATE user_education SET qualification = ?, board = ?, course = ?, specialization = ?, college = ?, start_date = ?, end_date = ?, course_type = ?, percentage = ?, cgpa = ?, roll_number = ?, lateral_entry = ?, skills = ?, description = ? WHERE user_id = ? AND id = ?`;
+      const params = [
+        qualification,
+        board,
+        course,
+        specialization,
+        college,
+        start_date,
+        end_date,
+        course_type,
+        percentage,
+        cgpa,
+        roll_number,
+        lateral_entry,
+        skills,
+        description,
+        user_id,
+        id,
+      ];
+      const result = await pool.query(updateQuery, params);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 // 🔐 Encrypt (Hash) Password
