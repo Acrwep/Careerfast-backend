@@ -3,12 +3,12 @@ const { response, request } = require("express");
 const jwt = require("jsonwebtoken");
 
 const login = async (request, response) => {
-  const { email, password } = request.body;
-  if (!email || !password) {
+  const { email, password, role_id } = request.body;
+  if (!email || !password || !role_id) {
     throw new Error("Please provide username and password");
   }
   try {
-    const result = await LoginModel.login(email, password);
+    const result = await LoginModel.login(email, password, role_id);
     if (result) {
       const token = generateToken(result);
       return response.status(200).json({

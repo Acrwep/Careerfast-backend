@@ -2,8 +2,18 @@ const pool = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 
 const LoginModel = {
-  login: async (email, password) => {
+  login: async (email, password, role_id) => {
     try {
+      const [checkRole] = await pool.query(
+        `SELECT role_id FROM users WHERE email = ?`,
+        [email]
+      );
+      if (role_id != checkRole[0].role_id) {
+        throw new Error("You are not allowed to login");
+      }
+
+      console.log("role_id", checkRole[0].id);
+
       const query = `SELECT id, password FROM users WHERE email = ? AND is_active = 1`;
       const [isExists] = await pool.query(query, [email]);
       if (isExists.length == 0) throw new Error("Invalid email");
