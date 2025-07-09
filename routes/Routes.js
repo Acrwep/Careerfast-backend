@@ -95,4 +95,6 @@ router.put("/updateResume", verifyToken, JobsController.updateResume);
 router.put("/updateSkills", verifyToken, JobsController.updateSkills);
 router.put("/updateAbout", verifyToken, JobsController.updateAbout);
 router.get("/getUserType", userController.getUserType);
+
+router.get("/getClasses", JobsController.getClasses);
 module.exports = router;

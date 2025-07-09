@@ -516,6 +516,21 @@ const updateAbout = async (request, response) => {
   }
 };
 
+const getClasses = async (request, response) => {
+  try {
+    const classes = await JobsModel.getClasses();
+    response.status(200).send({
+      message: "Classes fetched successfully",
+      data: classes,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error fetching classes",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -543,4 +558,5 @@ module.exports = {
   updateSkills,
   updateAbout,
   getJobPostByUserId,
+  getClasses,
 };

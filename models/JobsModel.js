@@ -678,6 +678,18 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getClasses: async () => {
+    try {
+      const classes = [];
+      for (let i = 1; i <= 12; i++) {
+        classes.push(i);
+      }
+      return classes;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;
