@@ -426,7 +426,7 @@ const insertProjects = async (request, response) => {
     description,
   } = request.body;
   try {
-    await userModel.insertProjects(
+    await JobsModel.insertProjects(
       user_id,
       company_name,
       project_title,
