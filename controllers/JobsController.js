@@ -542,6 +542,106 @@ const getClasses = async (request, response) => {
   }
 };
 
+const updateExperience = async (request, response) => {
+  const {
+    experince_type,
+    total_years,
+    total_months,
+    job_title,
+    company_name,
+    designation,
+    start_date,
+    end_date,
+    currently_working,
+    skills,
+    id,
+    user_id,
+  } = request.body;
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  try {
+    const result = await JobsModel.updateExperience(
+      experince_type,
+      total_years,
+      total_months,
+      job_title,
+      company_name,
+      designation,
+      start_date,
+      end_date,
+      currently_working,
+      formattedSkills,
+      id,
+      user_id
+    );
+    response.status(200).send({
+      message: "Experience updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating experience",
+      details: error.message,
+    });
+  }
+};
+
+const insertExperience = async (request, response) => {
+  const {
+    user_id,
+    experince_type,
+    total_years,
+    total_months,
+    job_title,
+    company_name,
+    designation,
+    start_date,
+    end_date,
+    currently_working,
+    skills,
+  } = request.body;
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  try {
+    const result = await JobsModel.insertExperience(
+      user_id,
+      experince_type,
+      total_years,
+      total_months,
+      job_title,
+      company_name,
+      designation,
+      start_date,
+      end_date,
+      currently_working,
+      formattedSkills
+    );
+    response.status(200).send({
+      message: "Experience inserted successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while inserting experience",
+      details: error.message,
+    });
+  }
+};
+
+const deleteExperience = async (request, response) => {
+  const { id } = request.query;
+  try {
+    const result = await JobsModel.deleteExperience(id);
+    response.status(200).send({
+      message: "Experience has been deleted",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while deleting experience",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -570,4 +670,7 @@ module.exports = {
   updateAbout,
   getJobPostByUserId,
   getClasses,
+  updateExperience,
+  insertExperience,
+  deleteExperience,
 };

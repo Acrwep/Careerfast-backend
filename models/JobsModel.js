@@ -694,6 +694,114 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  updateExperience: async (
+    experince_type,
+    total_years,
+    total_months,
+    job_title,
+    company_name,
+    designation,
+    start_date,
+    end_date,
+    currently_working,
+    skills,
+    id,
+    user_id
+  ) => {
+    try {
+      const updateQuery = `UPDATE user_professional SET
+                              experince_type = ?,
+                              total_years = ?,
+                              total_months = ?,
+                              job_title = ?,
+                              company_name = ?,
+                              designation = ?,
+                              start_date = ?,
+                              end_date = ?,
+                              currently_working = ?,
+                              skills = ?,
+                          WHERE id = ? AND user_id = ?`;
+      const values = [
+        experince_type,
+        total_years,
+        total_months,
+        job_title,
+        company_name,
+        designation,
+        start_date,
+        end_date,
+        currently_working,
+        JSON.stringify(skills),
+        id,
+        user_id,
+      ];
+      const [result] = await pool.query(updateQuery, values);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  insertExperience: async (
+    user_id,
+    experince_type,
+    total_years,
+    total_months,
+    job_title,
+    company_name,
+    designation,
+    start_date,
+    end_date,
+    currently_working,
+    skills
+  ) => {
+    try {
+      const insertQuery = `INSERT INTO user_professional(
+                              user_id,
+                              experince_type,
+                              total_years,
+                              total_months,
+                              job_title,
+                              company_name,
+                              designation,
+                              start_date,
+                              end_date,
+                              currently_working,
+                              skills
+                          )
+                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const values = [
+        user_id,
+        experince_type,
+        total_years,
+        total_months,
+        job_title,
+        company_name,
+        designation,
+        start_date,
+        end_date,
+        currently_working,
+        JSON.stringify(skills),
+      ];
+      const [result] = await pool.query(insertQuery, values);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  deleteExperience: async (id) => {
+    try {
+      const [result] = await pool.query(
+        `UPDATE user_professional SET is_deleted = 1 WHERE id = ?`,
+        id
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

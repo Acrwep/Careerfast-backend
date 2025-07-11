@@ -106,4 +106,12 @@ router.put(
 router.put("/updateEducation", verifyToken, userController.updateEducation);
 router.delete("/deleteEducation", verifyToken, userController.deleteEducation);
 router.post("/insertEducation", verifyToken, userController.insertEducation);
+
+router.put("/updateExperience", verifyToken, JobsController.updateExperience);
+router.post("/insertExperience", verifyToken, JobsController.insertExperience);
+router.delete(
+  "/deleteExperience",
+  verifyToken,
+  JobsController.deleteExperience
+);
 module.exports = router;

@@ -321,7 +321,7 @@ const UserModel = {
         user_id,
         id,
       ];
-      const result = await pool.query(updateQuery, params);
+      const [result] = await pool.query(updateQuery, params);
       return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);
@@ -330,7 +330,7 @@ const UserModel = {
 
   deleteEducation: async (id) => {
     try {
-      const result = await pool.query(
+      const [result] = await pool.query(
         `UPDATE user_education SET is_deleted = 1 WHERE id = ?`,
         id
       );
@@ -384,7 +384,7 @@ const UserModel = {
         roll_number,
         lateral_entry,
       ];
-      const result = await pool.query(insertQuery, values);
+      const [result] = await pool.query(insertQuery, values);
       return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);
