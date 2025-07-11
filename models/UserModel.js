@@ -322,12 +322,84 @@ const UserModel = {
         cgpa,
         roll_number,
         lateral_entry,
-        skills,
+        JSON.stringify(skills),
         description,
         user_id,
         id,
       ];
       const result = await pool.query(updateQuery, params);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  deleteEducation: async (id) => {
+    try {
+      const result = await pool.query(
+        `UPDATE user_education SET is_deleted = 1 WHERE id = ?`,
+        id
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  insertEducation: async (
+    user_id,
+    qualification,
+    board,
+    course,
+    specialization,
+    college,
+    start_date,
+    end_date,
+    course_type,
+    percentage,
+    cgpa,
+    roll_number,
+    lateral_entry,
+    skills,
+    description
+  ) => {
+    try {
+      const insertQuery = `INSERT INTO user_education(
+                              user_id,
+                              qualification,
+                              board,
+                              course,
+                              specialization,
+                              college,
+                              start_date,
+                              end_date,
+                              course_type,
+                              percentage,
+                              cgpa,
+                              roll_number,
+                              lateral_entry,
+                              skills,
+                              description
+                          )
+                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const values = [
+        user_id,
+        qualification,
+        board,
+        course,
+        specialization,
+        college,
+        start_date,
+        end_date,
+        course_type,
+        percentage,
+        cgpa,
+        roll_number,
+        lateral_entry,
+        JSON.stringify(skills),
+        description,
+      ];
+      const result = await pool.query(insertQuery, values);
       return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);

@@ -342,6 +342,122 @@ const updateBasicDetails = async (request, response) => {
   }
 };
 
+const updateEducation = async (request, response) => {
+  const {
+    qualification,
+    board,
+    course,
+    specialization,
+    college,
+    start_date,
+    end_date,
+    course_type,
+    percentage,
+    cgpa,
+    roll_number,
+    lateral_entry,
+    skills,
+    description,
+    user_id,
+    id,
+  } = request.body;
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  try {
+    const result = await userModel.updateEducation(
+      qualification,
+      board,
+      course,
+      specialization,
+      college,
+      start_date,
+      end_date,
+      course_type,
+      percentage,
+      cgpa,
+      roll_number,
+      lateral_entry,
+      formattedSkills,
+      description,
+      user_id,
+      id
+    );
+    response.status(200).send({
+      message: "Updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while updating",
+      details: error.message,
+    });
+  }
+};
+
+const deleteEducation = async (request, response) => {
+  const { id } = request.query;
+  try {
+    const result = await userModel.deleteEducation(id);
+    response.status(200).send({
+      message: "Education has been deleted",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while deleting",
+      details: error.message,
+    });
+  }
+};
+
+const insertEducation = async (request, response) => {
+  const {
+    user_id,
+    qualification,
+    board,
+    course,
+    specialization,
+    college,
+    start_date,
+    end_date,
+    course_type,
+    percentage,
+    cgpa,
+    roll_number,
+    lateral_entry,
+    skills,
+    description,
+  } = request.body;
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  try {
+    const result = await userModel.insertEducation(
+      user_id,
+      qualification,
+      board,
+      course,
+      specialization,
+      college,
+      start_date,
+      end_date,
+      course_type,
+      percentage,
+      cgpa,
+      roll_number,
+      lateral_entry,
+      formattedSkills,
+      description
+    );
+    response.status(201).send({
+      message: "Education inserted successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while inserting education",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -355,4 +471,7 @@ module.exports = {
   updateSocialLinks,
   getUserType,
   updateBasicDetails,
+  updateEducation,
+  deleteEducation,
+  insertEducation,
 };

@@ -12,8 +12,6 @@ const LoginModel = {
         throw new Error("You are not allowed to login");
       }
 
-      console.log("role_id", checkRole[0].id);
-
       const query = `SELECT id, password FROM users WHERE email = ? AND is_active = 1`;
       const [isExists] = await pool.query(query, [email]);
       if (isExists.length == 0) throw new Error("Invalid email");

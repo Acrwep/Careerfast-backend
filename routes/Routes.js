@@ -102,4 +102,8 @@ router.put(
   verifyToken,
   userController.updateBasicDetails
 );
+
+router.put("/updateEducation", verifyToken, userController.updateEducation);
+router.delete("/deleteEducation", verifyToken, userController.deleteEducation);
+router.post("/insertEducation", verifyToken, userController.insertEducation);
 module.exports = router;
