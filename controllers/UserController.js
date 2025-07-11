@@ -345,7 +345,6 @@ const updateBasicDetails = async (request, response) => {
 const updateEducation = async (request, response) => {
   const {
     qualification,
-    board,
     course,
     specialization,
     college,
@@ -356,16 +355,12 @@ const updateEducation = async (request, response) => {
     cgpa,
     roll_number,
     lateral_entry,
-    skills,
-    description,
     user_id,
     id,
   } = request.body;
-  const formattedSkills = Array.isArray(skills) ? skills : [skills];
   try {
     const result = await userModel.updateEducation(
       qualification,
-      board,
       course,
       specialization,
       college,
@@ -376,8 +371,6 @@ const updateEducation = async (request, response) => {
       cgpa,
       roll_number,
       lateral_entry,
-      formattedSkills,
-      description,
       user_id,
       id
     );
@@ -413,7 +406,6 @@ const insertEducation = async (request, response) => {
   const {
     user_id,
     qualification,
-    board,
     course,
     specialization,
     college,
@@ -424,15 +416,11 @@ const insertEducation = async (request, response) => {
     cgpa,
     roll_number,
     lateral_entry,
-    skills,
-    description,
   } = request.body;
-  const formattedSkills = Array.isArray(skills) ? skills : [skills];
   try {
     const result = await userModel.insertEducation(
       user_id,
       qualification,
-      board,
       course,
       specialization,
       college,
@@ -442,9 +430,7 @@ const insertEducation = async (request, response) => {
       percentage,
       cgpa,
       roll_number,
-      lateral_entry,
-      formattedSkills,
-      description
+      lateral_entry
     );
     response.status(201).send({
       message: "Education inserted successfully",

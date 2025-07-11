@@ -291,7 +291,6 @@ const UserModel = {
 
   updateEducation: async (
     qualification,
-    board,
     course,
     specialization,
     college,
@@ -302,16 +301,13 @@ const UserModel = {
     cgpa,
     roll_number,
     lateral_entry,
-    skills,
-    description,
     user_id,
     id
   ) => {
     try {
-      const updateQuery = `UPDATE user_education SET qualification = ?, board = ?, course = ?, specialization = ?, college = ?, start_date = ?, end_date = ?, course_type = ?, percentage = ?, cgpa = ?, roll_number = ?, lateral_entry = ?, skills = ?, description = ? WHERE user_id = ? AND id = ?`;
+      const updateQuery = `UPDATE user_education SET qualification = ?, course = ?, specialization = ?, college = ?, start_date = ?, end_date = ?, course_type = ?, percentage = ?, cgpa = ?, roll_number = ?, lateral_entry = ? WHERE user_id = ? AND id = ?`;
       const params = [
         qualification,
-        board,
         course,
         specialization,
         college,
@@ -322,8 +318,6 @@ const UserModel = {
         cgpa,
         roll_number,
         lateral_entry,
-        JSON.stringify(skills),
-        description,
         user_id,
         id,
       ];
@@ -349,7 +343,6 @@ const UserModel = {
   insertEducation: async (
     user_id,
     qualification,
-    board,
     course,
     specialization,
     college,
@@ -359,15 +352,12 @@ const UserModel = {
     percentage,
     cgpa,
     roll_number,
-    lateral_entry,
-    skills,
-    description
+    lateral_entry
   ) => {
     try {
       const insertQuery = `INSERT INTO user_education(
                               user_id,
                               qualification,
-                              board,
                               course,
                               specialization,
                               college,
@@ -377,15 +367,12 @@ const UserModel = {
                               percentage,
                               cgpa,
                               roll_number,
-                              lateral_entry,
-                              skills,
-                              description
+                              lateral_entry
                           )
-                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
       const values = [
         user_id,
         qualification,
-        board,
         course,
         specialization,
         college,
@@ -396,8 +383,6 @@ const UserModel = {
         cgpa,
         roll_number,
         lateral_entry,
-        JSON.stringify(skills),
-        description,
       ];
       const result = await pool.query(insertQuery, values);
       return result.affectedRows;
