@@ -121,7 +121,6 @@ const UserModel = {
     total_years,
     total_months,
     classes,
-    location,
     course,
     start_year,
     end_year,
@@ -132,7 +131,7 @@ const UserModel = {
       await conn.beginTransaction();
       // Update profile image
       const [personal] = await conn.query(
-        `UPDATE users SET profile_image = ?, is_email_verified = ?, user_type = ?, experince_type = ?, total_years = ?, total_months = ?, class = ?, location = ?, course = ?, start_year = ?, end_year = ?, gender = ? WHERE id = ?`,
+        `UPDATE users SET profile_image = ?, is_email_verified = ?, user_type = ?, experince_type = ?, total_years = ?, total_months = ?, class = ?, course = ?, start_year = ?, end_year = ?, gender = ? WHERE id = ?`,
         [
           profile_image,
           is_email_verified,
@@ -141,7 +140,6 @@ const UserModel = {
           total_years,
           total_months,
           classes,
-          location,
           course,
           start_year,
           end_year,
