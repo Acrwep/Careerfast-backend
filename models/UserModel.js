@@ -116,15 +116,38 @@ const UserModel = {
     address,
     professional,
     is_email_verified,
-    user_type
+    user_type,
+    experince_type,
+    total_years,
+    total_months,
+    classes,
+    location,
+    course,
+    start_year,
+    end_year,
+    gender
   ) => {
     const conn = await pool.getConnection();
     try {
       await conn.beginTransaction();
       // Update profile image
       const [personal] = await conn.query(
-        `UPDATE users SET profile_image = ?, is_email_verified = ?, user_type = ? WHERE id = ?`,
-        [profile_image, is_email_verified, user_type, user_id]
+        `UPDATE users SET profile_image = ?, is_email_verified = ?, user_type = ?, experince_type = ?, total_years = ?, total_months = ?, class = ?, location = ?, course = ?, start_year = ?, end_year = ?, gender = ? WHERE id = ?`,
+        [
+          profile_image,
+          is_email_verified,
+          user_type,
+          experince_type,
+          total_years,
+          total_months,
+          classes,
+          location,
+          course,
+          start_year,
+          end_year,
+          gender,
+          user_id,
+        ]
       );
 
       // insert user address
@@ -137,12 +160,9 @@ const UserModel = {
         professional.map(async (p) => {
           // Insert user professional
           await conn.query(
-            `INSERT INTO user_professional (user_id, experince_type, total_years, total_months, job_title, company_name, designation, start_date, end_date, currently_working, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO user_professional (user_id, job_title, company_name, designation, start_date, end_date, currently_working, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
             [
               user_id,
-              p.experience_type,
-              p.total_years,
-              p.total_months,
               p.job_title,
               p.company_name,
               p.designation,

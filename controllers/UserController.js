@@ -141,6 +141,15 @@ const insertProfile = async (request, response) => {
     professional,
     is_email_verified,
     user_type,
+    experince_type,
+    total_years,
+    total_months,
+    classes,
+    location,
+    course,
+    start_year,
+    end_year,
+    gender,
   } = request.body;
 
   if (
@@ -151,7 +160,9 @@ const insertProfile = async (request, response) => {
     !city ||
     !pincode ||
     !address ||
-    !user_type
+    !user_type ||
+    !experince_type ||
+    !gender
   ) {
     return response.status(400).json({
       message: "Missing required fields",
@@ -164,6 +175,8 @@ const insertProfile = async (request, response) => {
         "pincode",
         "address",
         "user_type",
+        "experince_type",
+        "gender",
       ],
     });
   }
@@ -182,7 +195,16 @@ const insertProfile = async (request, response) => {
       address,
       formattedProfessional,
       is_email_verified,
-      user_type
+      user_type,
+      experince_type,
+      total_years,
+      total_months,
+      classes,
+      location,
+      course,
+      start_year,
+      end_year,
+      gender
     );
 
     response.status(201).json({
