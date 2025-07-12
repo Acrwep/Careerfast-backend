@@ -114,4 +114,6 @@ router.delete(
   verifyToken,
   JobsController.deleteExperience
 );
+router.get("/getUserProfile", verifyToken, userController.getUserProfile);
+
 module.exports = router;

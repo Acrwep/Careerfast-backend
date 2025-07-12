@@ -444,6 +444,22 @@ const insertEducation = async (request, response) => {
   }
 };
 
+const getUserProfile = async (request, response) => {
+  const { user_id } = request.query;
+  try {
+    const result = await userModel.getUserProfile(user_id);
+    response.status(200).send({
+      message: "User profile fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while fetching user profile",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -460,4 +476,5 @@ module.exports = {
   updateEducation,
   deleteEducation,
   insertEducation,
+  getUserProfile,
 };

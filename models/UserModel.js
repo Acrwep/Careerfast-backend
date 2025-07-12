@@ -390,6 +390,50 @@ const UserModel = {
       throw new Error(error.message);
     }
   },
+
+  getUserProfile: async (user_id) => {
+    try {
+      const [isIdExists] = await pool.query(
+        `SELECT id FROM users WHERE id = ?`,
+        user_id
+      );
+      if (isIdExists.length == 0) {
+        throw new Error("Invalid user Id");
+      }
+
+      const query = `SELECT
+                        u.id,
+                        u.role_id,
+                        r.name AS role_name,
+                        u.first_name,
+                        u.last_name,
+                        u.phone_code,
+                        u.phone,
+                        u.email,
+                        CASE WHEN u.is_email_verified = 1 THEN 1 ELSE 0 END AS is_email_verified,
+                        u.gender,
+                        u.user_type,
+                        u.class,
+                        u.location,
+                        u.course,
+                        u.start_year,
+                        u.end_year,
+                        u.profile_image,
+                        u.resume,
+                        u.about,
+                        u.skills
+                    FROM
+                        users u
+                    INNER JOIN role r ON
+                        u.role_id = r.id
+                    WHERE
+                        u.is_active = 1 AND u.id = ?`;
+      const [result] = await pool.query(query, user_id);
+      return result[0];
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 // 🔐 Encrypt (Hash) Password

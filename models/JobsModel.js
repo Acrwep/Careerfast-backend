@@ -743,21 +743,11 @@ const JobsModel = {
     }
   },
 
-  insertExperience: async (
-    user_id,
-    experince_type,
-    total_years,
-    total_months,
-    job_title,
-    company_name,
-    designation,
-    start_date,
-    end_date,
-    currently_working,
-    skills
-  ) => {
+  insertExperience: async (user_id, experiences) => {
     try {
-      const insertQuery = `INSERT INTO user_professional(
+      if (experiences.length >= 1) {
+        experiences.map(async (e) => {
+          const insertQuery = `INSERT INTO user_professional(
                               user_id,
                               experince_type,
                               total_years,
@@ -771,21 +761,24 @@ const JobsModel = {
                               skills
                           )
                           VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      const values = [
-        user_id,
-        experince_type,
-        total_years,
-        total_months,
-        job_title,
-        company_name,
-        designation,
-        start_date,
-        end_date,
-        currently_working,
-        JSON.stringify(skills),
-      ];
-      const [result] = await pool.query(insertQuery, values);
-      return result.affectedRows;
+          const values = [
+            user_id,
+            e.experince_type,
+            e.total_years,
+            e.total_months,
+            e.job_title,
+            e.company_name,
+            e.designation,
+            e.start_date,
+            e.end_date,
+            e.currently_working,
+            JSON.stringify(e.skills),
+          ];
+          await pool.query(insertQuery, values);
+        });
+      }
+
+      // return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);
     }
