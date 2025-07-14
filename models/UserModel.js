@@ -476,26 +476,64 @@ const UserModel = {
                                   u.user_id = ?`;
       const [getEducation] = await pool.query(educationQuery, [user_id]);
 
-      const professionalQuery = `SELECT
+      const professionalQuery = `
+                                SELECT
                                     u.id,
                                     u.job_title,
                                     u.company_name,
                                     u.designation,
                                     u.start_date,
                                     u.end_date,
-                                    CASE WHEN u.currently_working = 1 THEN 1 ELSE 0  END AS currently_working,
+                                    CASE WHEN u.currently_working = 1 THEN 1 ELSE 0 END AS currently_working,
                                     u.skills
-                                FROM
-                                    user_professional u
-                                WHERE
-                                    u.user_id = 1`;
-      const [getProfessional] = await pool.query(professionalQuery, [user_id]);
+                                FROM user_professional u
+                                WHERE u.user_id = ?`;
+
+      const [rows] = await pool.query(professionalQuery, [user_id]);
+
+      // Convert skills string to array for each row
+      const getProfessional = rows.map((row) => {
+        return {
+          ...row,
+          skills: row.skills ? JSON.parse(row.skills) : [],
+        };
+      });
+
+      // Get projects details
+      const projectQuery = `SELECT
+                              u.id,
+                              u.company_name,
+                              u.project_title,
+                              u.project_type,
+                              u.start_date,
+                              u.end_date,
+                              u.description
+                          FROM
+                              user_projects u
+                          WHERE
+                              u.user_id = ?`;
+      const [getProjects] = await pool.query(projectQuery, [user_id]);
+
+      const linksQuery = `SELECT
+                            linkedin,
+                            facebook,
+                            instagram,
+                            twitter,
+                            dribble,
+                            behance
+                        FROM
+                            user_social_links
+                        WHERE
+                            user_id = ?`;
+      const [getLinks] = await pool.query(linksQuery, [user_id]);
 
       //Get combined result set
       const formattedResult = {
         ...result[0],
         education: getEducation,
         professional: getProfessional,
+        projects: getProjects,
+        social_links: getLinks,
       };
       return formattedResult;
     } catch (error) {
