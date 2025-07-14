@@ -533,7 +533,7 @@ const UserModel = {
         education: getEducation,
         professional: getProfessional,
         projects: getProjects,
-        social_links: getLinks,
+        social_links: getLinks[0],
       };
       return formattedResult;
     } catch (error) {
