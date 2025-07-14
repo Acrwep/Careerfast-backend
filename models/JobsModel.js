@@ -710,10 +710,12 @@ const JobsModel = {
     user_id
   ) => {
     try {
+      const [userUpdate] = await pool.query(
+        `UPDATE users SET experience_type = ?, total_years = ?, total_months = ? WHERE id = ?`,
+        [experince_type, total_years, total_months, user_id]
+      );
+
       const updateQuery = `UPDATE user_professional SET
-                              experince_type = ?,
-                              total_years = ?,
-                              total_months = ?,
                               job_title = ?,
                               company_name = ?,
                               designation = ?,
@@ -723,9 +725,6 @@ const JobsModel = {
                               skills = ?,
                           WHERE id = ? AND user_id = ?`;
       const values = [
-        experince_type,
-        total_years,
-        total_months,
         job_title,
         company_name,
         designation,
@@ -749,9 +748,6 @@ const JobsModel = {
         experiences.map(async (e) => {
           const insertQuery = `INSERT INTO user_professional(
                               user_id,
-                              experince_type,
-                              total_years,
-                              total_months,
                               job_title,
                               company_name,
                               designation,
@@ -760,12 +756,9 @@ const JobsModel = {
                               currently_working,
                               skills
                           )
-                          VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                          VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
           const values = [
             user_id,
-            e.experince_type,
-            e.total_years,
-            e.total_months,
             e.job_title,
             e.company_name,
             e.designation,

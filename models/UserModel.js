@@ -418,7 +418,7 @@ const UserModel = {
       if (isIdExists.length == 0) {
         throw new Error("Invalid user Id");
       }
-
+      // Get user basic information
       const query = `SELECT
                         u.id,
                         u.role_id,
@@ -428,26 +428,76 @@ const UserModel = {
                         u.phone_code,
                         u.phone,
                         u.email,
-                        CASE WHEN u.is_email_verified = 1 THEN 1 ELSE 0 END AS is_email_verified,
+                        CASE WHEN u.is_email_verified = 1 THEN 1 ELSE 0
+                        END AS is_email_verified,
                         u.gender,
                         u.user_type,
                         u.class,
-                        u.location,
                         u.course,
                         u.start_year,
                         u.end_year,
                         u.profile_image,
                         u.resume,
                         u.about,
-                        u.skills
+                        u.skills,
+                        u.organization,
+                        u.experince_type,
+                        u.total_years,
+                        u.total_months,
+                        u.created_date,
+                        ot.name AS organization_type
                     FROM
                         users u
                     INNER JOIN role r ON
                         u.role_id = r.id
+                    LEFT JOIN organization_type ot ON
+                      u.organization_type_id = ot.id
                     WHERE
                         u.is_active = 1 AND u.id = ?`;
       const [result] = await pool.query(query, user_id);
-      return result[0];
+
+      // Get user education details
+      const educationQuery = `SELECT
+                                  u.id,
+                                  u.qualification,
+                                  u.course,
+                                  u.specialization,
+                                  u.course,
+                                  u.start_date,
+                                  u.end_date,
+                                  u.course_type,
+                                  u.percentage,
+                                  u.cgpa,
+                                  u.roll_number,
+                                  u.lateral_entry
+                              FROM
+                                  user_education u
+                              WHERE
+                                  u.user_id = ?`;
+      const [getEducation] = await pool.query(educationQuery, [user_id]);
+
+      const professionalQuery = `SELECT
+                                    u.id,
+                                    u.job_title,
+                                    u.company_name,
+                                    u.designation,
+                                    u.start_date,
+                                    u.end_date,
+                                    CASE WHEN u.currently_working = 1 THEN 1 ELSE 0  END AS currently_working,
+                                    u.skills
+                                FROM
+                                    user_professional u
+                                WHERE
+                                    u.user_id = 1`;
+      const [getProfessional] = await pool.query(professionalQuery, [user_id]);
+
+      //Get combined result set
+      const formattedResult = {
+        ...result[0],
+        education: getEducation,
+        professional: getProfessional,
+      };
+      return formattedResult;
     } catch (error) {
       throw new Error(error.message);
     }
