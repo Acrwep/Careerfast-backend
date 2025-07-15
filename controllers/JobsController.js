@@ -679,6 +679,14 @@ const getColleges = async (request, response) => {
   }
 };
 
+const getCourseType = async (request, response) => {
+  const types = await JobsModel.getCourseType();
+  response.status(200).send({
+    message: "Course types fetched successfully",
+    data: types,
+  });
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -714,4 +722,5 @@ module.exports = {
   getCourses,
   getSpecialization,
   getColleges,
+  getCourseType,
 };

@@ -119,6 +119,7 @@ router.get("/getQualification", JobsController.getQualification);
 router.get("/getCourses", JobsController.getCourses);
 router.get("/getSpecialization", JobsController.getSpecialization);
 router.get("/getColleges", JobsController.getColleges);
+router.get("/getCourseType", JobsController.getCourseType);
 
 // router.post("/insertCollege", RoleController.insertCollege);
 

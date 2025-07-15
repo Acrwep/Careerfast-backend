@@ -832,6 +832,11 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getCourseType: async () => {
+    const types = ["Part-time", "Full-time", "Distance Learning"];
+    return types;
+  },
 };
 
 module.exports = JobsModel;
