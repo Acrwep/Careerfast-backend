@@ -821,6 +821,17 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getColleges: async () => {
+    try {
+      const [colleges] = await pool.query(
+        `SELECT id, name, city, state, university FROM college_master WHERE is_deleted = 0`
+      );
+      return colleges;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

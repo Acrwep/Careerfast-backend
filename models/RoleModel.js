@@ -21,8 +21,6 @@ const RoleModel = {
     fs.createReadStream(fullPath)
       .pipe(csv())
       .on("data", async (row) => {
-        console.log("row", row);
-
         await pool.query(
           "INSERT INTO college_master (name, city, state, university, is_deleted) VALUES (?, ?, ?, ?, 0)",
           [row.CollegeName, row.City, row.State, row.University || row.type]

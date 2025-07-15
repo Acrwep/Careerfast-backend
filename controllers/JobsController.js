@@ -664,6 +664,21 @@ const getSpecialization = async (request, response) => {
   }
 };
 
+const getColleges = async (request, response) => {
+  try {
+    const colleges = await JobsModel.getColleges();
+    response.status(200).send({
+      message: "Colleges fetched successfully",
+      data: colleges,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching colleges",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -698,4 +713,5 @@ module.exports = {
   getQualification,
   getCourses,
   getSpecialization,
+  getColleges,
 };

@@ -118,7 +118,8 @@ router.get("/getUserProfile", verifyToken, userController.getUserProfile);
 router.get("/getQualification", JobsController.getQualification);
 router.get("/getCourses", JobsController.getCourses);
 router.get("/getSpecialization", JobsController.getSpecialization);
+router.get("/getColleges", JobsController.getColleges);
 
-router.post("/insertCollege", RoleController.insertCollege);
+// router.post("/insertCollege", RoleController.insertCollege);
 
 module.exports = router;
