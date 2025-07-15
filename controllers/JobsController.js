@@ -619,6 +619,51 @@ const deleteExperience = async (request, response) => {
   }
 };
 
+const getQualification = async (request, response) => {
+  try {
+    const qualifications = await JobsModel.getQualification();
+    response.status(200).send({
+      message: "Qualifications fetched successfully",
+      data: qualifications,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching qualifications",
+      details: error.message,
+    });
+  }
+};
+
+const getCourses = async (request, response) => {
+  try {
+    const courses = await JobsModel.getCourses();
+    response.status(200).send({
+      message: "Courses fetched successfully",
+      data: courses,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching courses",
+      details: error.message,
+    });
+  }
+};
+
+const getSpecialization = async (request, response) => {
+  try {
+    const specializations = await JobsModel.getSpecialization();
+    response.status(200).send({
+      message: "Specialization fetched successfully",
+      data: specializations,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching specialization",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -650,4 +695,7 @@ module.exports = {
   updateExperience,
   insertExperience,
   deleteExperience,
+  getQualification,
+  getCourses,
+  getSpecialization,
 };

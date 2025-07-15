@@ -115,5 +115,10 @@ router.delete(
   JobsController.deleteExperience
 );
 router.get("/getUserProfile", verifyToken, userController.getUserProfile);
+router.get("/getQualification", JobsController.getQualification);
+router.get("/getCourses", JobsController.getCourses);
+router.get("/getSpecialization", JobsController.getSpecialization);
+
+router.post("/insertCollege", RoleController.insertCollege);
 
 module.exports = router;

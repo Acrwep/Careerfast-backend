@@ -16,6 +16,11 @@ const getRoles = async (request, response) => {
   }
 };
 
+const insertCollege = async (request, response) => {
+  await RoleModel.insertCollege();
+};
+
 module.exports = {
   getRoles,
+  insertCollege,
 };

@@ -788,6 +788,39 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getQualification: async () => {
+    try {
+      const [qualifications] = await pool.query(
+        `SELECT id, name FROM qualification WHERE is_deleted = 0`
+      );
+      return qualifications;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getCourses: async () => {
+    try {
+      const [courses] = await pool.query(
+        `SELECT id, name FROM course_master WHERE is_deleted = 0`
+      );
+      return courses;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getSpecialization: async () => {
+    try {
+      const [specializations] = await pool.query(
+        `SELECT id, name FROM specialization_master WHERE is_deleted = 0`
+      );
+      return specializations;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;
