@@ -16,7 +16,7 @@ const RoleModel = {
 
   insertCollege: async () => {
     const fullPath = path.join(
-      "C:/Users/hublo/OneDrive/Documents/engineering_colleges_in_India.csv"
+      "C:/Users/dell/Downloads/engineering_colleges.csv/engineering_colleges_in_India.csv"
     );
     fs.createReadStream(fullPath)
       .pipe(csv())
