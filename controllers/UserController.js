@@ -242,6 +242,7 @@ const updateSocialLinks = async (request, response) => {
   }
 };
 
+// Get applied job list for candidate
 const getUserAppliedJobs = async (request, response) => {
   const { userId } = request.query;
 

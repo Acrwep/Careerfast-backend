@@ -250,9 +250,7 @@ const jobPosting = async (request, response) => {
 
 const applyForJob = async (request, response) => {
   const { postId, userId, answers } = request.body;
-
   const formattedQuestions = Array.isArray(answers) ? answers : [answers];
-
   try {
     await JobsModel.applyForJob(postId, userId, formattedQuestions);
     return response.status(200).send({

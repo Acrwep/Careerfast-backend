@@ -451,6 +451,7 @@ const UserModel = {
                         u.experince_type,
                         u.total_years,
                         u.total_months,
+                        u.location,
                         u.created_date,
                         ot.name AS organization_type
                     FROM
