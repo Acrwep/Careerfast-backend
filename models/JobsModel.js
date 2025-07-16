@@ -714,7 +714,7 @@ const JobsModel = {
                               start_date = ?,
                               end_date = ?,
                               currently_working = ?,
-                              skills = ?,
+                              skills = ?
                           WHERE id = ? AND user_id = ?`;
       const values = [
         job_title,
