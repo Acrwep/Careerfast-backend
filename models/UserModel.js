@@ -286,10 +286,11 @@ const UserModel = {
     experince_type,
     total_years,
     total_months,
+    location,
     user_id
   ) => {
     try {
-      const query = `UPDATE users SET first_name = ?, last_name = ?, gender = ?, user_type = ?, class = ?, course = ?, start_year = ?, end_year = ?, experince_type = ?, total_years = ?, total_months = ? WHERE id = ?`;
+      const query = `UPDATE users SET first_name = ?, last_name = ?, gender = ?, user_type = ?, class = ?, course = ?, start_year = ?, end_year = ?, experince_type = ?, total_years = ?, total_months = ?, location = ? WHERE id = ?`;
       const params = [
         first_name,
         last_name,
@@ -302,9 +303,9 @@ const UserModel = {
         experince_type,
         total_years,
         total_months,
+        location,
         user_id,
       ];
-      console.log("params", params);
 
       const [result] = await pool.query(query, params);
       return result.affectedRows;

@@ -337,6 +337,7 @@ const updateBasicDetails = async (request, response) => {
     experince_type,
     total_years,
     total_months,
+    location,
     user_id,
   } = request.body;
   try {
@@ -352,6 +353,7 @@ const updateBasicDetails = async (request, response) => {
       experince_type,
       total_years,
       total_months,
+      location,
       user_id
     );
     response.status(200).send({
