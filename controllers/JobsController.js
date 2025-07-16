@@ -685,7 +685,7 @@ const deleteProject = async (request, response) => {
     const result = await JobsModel.deleteProject(id);
     response.status(200).send({
       message: "Projects has been deleted",
-      data: colleges,
+      data: result,
     });
   } catch (error) {
     response.status(500).json({
