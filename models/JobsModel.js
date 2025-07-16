@@ -696,9 +696,6 @@ const JobsModel = {
   },
 
   updateExperience: async (
-    experince_type,
-    total_years,
-    total_months,
     job_title,
     company_name,
     designation,
@@ -710,11 +707,6 @@ const JobsModel = {
     user_id
   ) => {
     try {
-      const [userUpdate] = await pool.query(
-        `UPDATE users SET experience_type = ?, total_years = ?, total_months = ? WHERE id = ?`,
-        [experince_type, total_years, total_months, user_id]
-      );
-
       const updateQuery = `UPDATE user_professional SET
                               job_title = ?,
                               company_name = ?,

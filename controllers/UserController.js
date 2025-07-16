@@ -336,6 +336,9 @@ const updateBasicDetails = async (request, response) => {
     start_year,
     end_year,
     user_id,
+    experince_type,
+    total_years,
+    total_months,
   } = request.body;
   try {
     const result = await userModel.updateBasicDetails(
@@ -348,7 +351,10 @@ const updateBasicDetails = async (request, response) => {
       course,
       start_year,
       end_year,
-      user_id
+      user_id,
+      experince_type,
+      total_years,
+      total_months
     );
     response.status(200).send({
       message: "Updated successfully",

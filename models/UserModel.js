@@ -284,9 +284,16 @@ const UserModel = {
     course,
     start_year,
     end_year,
-    user_id
+    user_id,
+    experince_type,
+    total_years,
+    total_months
   ) => {
     try {
+      const [userUpdate] = await pool.query(
+        `UPDATE users SET experience_type = ?, total_years = ?, total_months = ? WHERE id = ?`,
+        [experince_type, total_years, total_months, user_id]
+      );
       const query = `UPDATE users SET first_name = ?, last_name = ?, gender = ?, user_type = ?, class = ?, location = ?, course = ?, start_year = ?, end_year = ? WHERE id = ?`;
       const params = [
         first_name,

@@ -544,9 +544,6 @@ const getClasses = async (request, response) => {
 
 const updateExperience = async (request, response) => {
   const {
-    experince_type,
-    total_years,
-    total_months,
     job_title,
     company_name,
     designation,
@@ -560,9 +557,6 @@ const updateExperience = async (request, response) => {
   const formattedSkills = Array.isArray(skills) ? skills : [skills];
   try {
     const result = await JobsModel.updateExperience(
-      experince_type,
-      total_years,
-      total_months,
       job_title,
       company_name,
       designation,
