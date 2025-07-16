@@ -469,7 +469,7 @@ const UserModel = {
                                   u.qualification,
                                   u.course,
                                   u.specialization,
-                                  u.course,
+                                  u.college,
                                   u.start_date,
                                   u.end_date,
                                   u.course_type,

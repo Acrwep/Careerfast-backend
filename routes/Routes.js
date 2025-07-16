@@ -6,7 +6,6 @@ const RoleController = require("../controllers/RoleController");
 const OrganizationController = require("../controllers/OrganizationController");
 const { verifyToken } = require("../Validation/Validation");
 const JobsController = require("../controllers/JobsController");
-const { jobPosting } = require("../models/JobsModel");
 const EmailController = require("../controllers/EmailController");
 
 // Login module APIs
