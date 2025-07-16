@@ -679,6 +679,22 @@ const getCourseType = async (request, response) => {
   });
 };
 
+const deleteProject = async (request, response) => {
+  const { id } = request.query;
+  try {
+    const result = await JobsModel.deleteProject(id);
+    response.status(200).send({
+      message: "Projects has been deleted",
+      data: colleges,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while deleting project",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -715,4 +731,5 @@ module.exports = {
   getSpecialization,
   getColleges,
   getCourseType,
+  deleteProject,
 };

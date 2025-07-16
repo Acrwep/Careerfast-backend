@@ -129,4 +129,6 @@ router.get("/getCourseType", JobsController.getCourseType);
 
 // router.post("/insertCollege", RoleController.insertCollege);
 
+router.delete("/deleteProject", verifyToken, JobsController.deleteProject);
+
 module.exports = router;

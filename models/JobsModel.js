@@ -772,7 +772,7 @@ const JobsModel = {
   deleteExperience: async (id) => {
     try {
       const [result] = await pool.query(
-        `UPDATE user_professional SET is_deleted = 1 WHERE id = ?`,
+        `DELETE FROM user_professional WHERE id = ?`,
         id
       );
       return result.affectedRows;
@@ -828,6 +828,18 @@ const JobsModel = {
   getCourseType: async () => {
     const types = ["Part-time", "Full-time", "Distance Learning"];
     return types;
+  },
+
+  deleteProject: async (id) => {
+    try {
+      const [result] = await pool.query(
+        `DELETE FROM user_projects WHERE id = ?`,
+        [id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
 };
 

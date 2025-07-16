@@ -356,7 +356,7 @@ const UserModel = {
   deleteEducation: async (id) => {
     try {
       const [result] = await pool.query(
-        `UPDATE user_education SET is_deleted = 1 WHERE id = ?`,
+        `DELETE FROM user_education WHERE id = ?`,
         id
       );
       return result.affectedRows;
