@@ -481,7 +481,8 @@ const UserModel = {
                               FROM
                                   user_education u
                               WHERE
-                                  u.user_id = ?`;
+                                  u.is_deleted = 0
+                                  AND u.user_id = ?`;
       const [getEducation] = await pool.query(educationQuery, [user_id]);
 
       const professionalQuery = `
@@ -495,7 +496,7 @@ const UserModel = {
                                     CASE WHEN u.currently_working = 1 THEN 1 ELSE 0 END AS currently_working,
                                     u.skills
                                 FROM user_professional u
-                                WHERE u.user_id = ?`;
+                                WHERE u.is_deleted = 0 AND u.user_id = ?`;
 
       const [rows] = await pool.query(professionalQuery, [user_id]);
 
@@ -519,7 +520,8 @@ const UserModel = {
                           FROM
                               user_projects u
                           WHERE
-                              u.user_id = ?`;
+                              u.is_deleted = 0
+                              AND u.user_id = ?`;
       const [getProjects] = await pool.query(projectQuery, [user_id]);
 
       const linksQuery = `SELECT
