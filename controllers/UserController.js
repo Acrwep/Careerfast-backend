@@ -487,6 +487,22 @@ const getUserProfile = async (request, response) => {
   }
 };
 
+const isProfileUpdated = async (request, response) => {
+  const { email } = request.query;
+  try {
+    const result = await userModel.isProfileUpdated(email);
+    response.status(200).send({
+      message: "Data fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while fetching data",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -504,4 +520,5 @@ module.exports = {
   deleteEducation,
   insertEducation,
   getUserProfile,
+  isProfileUpdated,
 };

@@ -330,6 +330,14 @@ const UserModel = {
     id
   ) => {
     try {
+      const [chechId] = await pool.query(
+        `SELECT id FROM user_education WHERE id = ?`,
+        [id]
+      );
+      if (chechId.length === 0) {
+        throw new Error("Invalid Id");
+      }
+
       const updateQuery = `UPDATE user_education SET qualification = ?, course = ?, specialization = ?, college = ?, start_date = ?, end_date = ?, course_type = ?, percentage = ?, cgpa = ?, roll_number = ?, lateral_entry = ? WHERE user_id = ? AND id = ?`;
       const params = [
         qualification,
@@ -546,6 +554,25 @@ const UserModel = {
         social_links: getLinks[0],
       };
       return formattedResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  isProfileUpdated: async (email) => {
+    try {
+      const [isEmailExists] = await pool.query(
+        `SELECT id FROM users WHERE email = ?`,
+        [email]
+      );
+      if (isEmailExists.length === 0) {
+        throw new Error("Invalid email");
+      }
+      const [isUpdated] = await pool.query(
+        `SELECT CASE WHEN is_email_verified = 1 THEN 1 ELSE 0 END AS is_email_verified FROM users WHERE email = ?`,
+        [email]
+      );
+      return isUpdated[0].is_email_verified ? true : false;
     } catch (error) {
       throw new Error(error.message);
     }

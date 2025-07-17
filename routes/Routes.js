@@ -130,5 +130,9 @@ router.get("/getCourseType", JobsController.getCourseType);
 // router.post("/insertCollege", RoleController.insertCollege);
 
 router.delete("/deleteProject", verifyToken, JobsController.deleteProject);
+router.post("/saveJobPost", verifyToken, JobsController.saveJobPost);
+router.get("/getSavedJobs", verifyToken, JobsController.getSavedJobs);
+router.delete("/removeSavedJobs", verifyToken, JobsController.removeSavedJobs);
+router.get("/isProfileUpdated", verifyToken, userController.isProfileUpdated);
 
 module.exports = router;

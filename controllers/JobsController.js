@@ -695,6 +695,54 @@ const deleteProject = async (request, response) => {
   }
 };
 
+const saveJobPost = async (request, response) => {
+  const { user_id, job_post_id } = request.body;
+  try {
+    const result = await JobsModel.saveJobPost(user_id, job_post_id);
+    response.status(201).send({
+      message: "This job has been added to your watchlist",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while add this job to your watchlist",
+      details: error.message,
+    });
+  }
+};
+
+const getSavedJobs = async (request, response) => {
+  const { user_id } = request.query;
+  try {
+    const savedJobs = await JobsModel.getSavedJobs(user_id);
+    response.status(200).send({
+      message: "Saved jobs fetched successfully",
+      data: savedJobs,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching saved jobs",
+      details: error.message,
+    });
+  }
+};
+
+const removeSavedJobs = async (request, response) => {
+  const { id } = request.query;
+  try {
+    const result = await JobsModel.removeSavedJobs(id);
+    response.status(200).send({
+      message: "This job has been removed from your watchlist",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while removing this job from your watchlist",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -732,4 +780,7 @@ module.exports = {
   getColleges,
   getCourseType,
   deleteProject,
+  saveJobPost,
+  getSavedJobs,
+  removeSavedJobs,
 };

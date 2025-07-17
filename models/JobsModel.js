@@ -624,6 +624,14 @@ const JobsModel = {
     id
   ) => {
     try {
+      const [chechId] = await pool.query(
+        `SELECT id FROM user_projects WHERE id = ?`,
+        [id]
+      );
+      if (chechId.length === 0) {
+        throw new Error("Invalid Id");
+      }
+
       const updateQuery = `UPDATE user_projects SET
                               company_name = ?,
                               project_title = ?,
@@ -707,6 +715,13 @@ const JobsModel = {
     user_id
   ) => {
     try {
+      const [chechId] = await pool.query(
+        `SELECT id FROM user_professional WHERE id = ?`,
+        [id]
+      );
+      if (chechId.length === 0) {
+        throw new Error("Invalid Id");
+      }
       const updateQuery = `UPDATE user_professional SET
                               job_title = ?,
                               company_name = ?,
@@ -834,6 +849,52 @@ const JobsModel = {
     try {
       const [result] = await pool.query(
         `DELETE FROM user_projects WHERE id = ?`,
+        [id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  saveJobPost: async (user_id, job_post_id) => {
+    try {
+      const insertQuery = `INSERT INTO user_saved_jobs (user_id, job_post_id, created_date) VALUES (?, ?, ?)`;
+      const values = [user_id, job_post_id, new Date()];
+      const [result] = await pool.query(insertQuery, values);
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getSavedJobs: async (user_id) => {
+    try {
+      const query = `SELECT
+                        sj.id,
+                        sj.user_id,
+                        sj.job_post_id,
+                        jp.company_name,
+                        jp.company_logo,
+                        jp.job_title
+                    FROM
+                        user_saved_jobs sj
+                    INNER JOIN job_post jp ON
+                      sj.job_post_id = jp.id
+                    WHERE
+                        sj.user_id = ?
+                    ORDER BY sj.created_date`;
+      const [savedJobs] = await pool.query(query, [user_id]);
+      return savedJobs;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  removeSavedJobs: async (id) => {
+    try {
+      const [result] = await pool.query(
+        `DELETE FROM user_saved_jobs WHERE id = ?`,
         [id]
       );
       return result.affectedRows;
