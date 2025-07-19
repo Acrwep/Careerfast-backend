@@ -523,16 +523,25 @@ const JobsModel = {
         }
       };
 
-      const processedPosts = posts.map((post) => ({
-        ...post,
-        duration_period: safeParseArray(post.duration_period),
-        job_category: safeParseArray(post.job_category),
-        skills: safeParseArray(post.skills),
-        experience_required: safeParseArray(post.experience_required),
-        diversity_hiring: safeParseArray(post.diversity_hiring),
-        benefits: safeParseArray(post.benefits),
-        working_days: post.working_days || null,
-      }));
+      const questionQuery = `SELECT id, post_id, question, CASE WHEN isrequired = 1 THEN 1 ELSE 0 END AS isrequired FROM job_post_questions WHERE post_id = ? ORDER BY created_at ASC`;
+
+      const processedPosts = await Promise.all(
+        posts.map(async (post) => {
+          const [questions] = await pool.query(questionQuery, [post.id]);
+
+          return {
+            ...post,
+            duration_period: safeParseArray(post.duration_period),
+            job_category: safeParseArray(post.job_category),
+            skills: safeParseArray(post.skills),
+            experience_required: safeParseArray(post.experience_required),
+            diversity_hiring: safeParseArray(post.diversity_hiring),
+            benefits: safeParseArray(post.benefits),
+            working_days: post.working_days || null,
+            questions,
+          };
+        })
+      );
 
       return {
         success: true,

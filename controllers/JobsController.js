@@ -299,7 +299,7 @@ const getJobPostByUserId = async (request, response) => {
       };
     });
     return response.status(200).send({
-      message: "jobpost fetched successfully",
+      message: "job post fetched successfully",
       data: formatResult,
     });
   } catch (error) {
