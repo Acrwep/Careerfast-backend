@@ -453,13 +453,11 @@ const JobsModel = {
       const whereClauses = [];
       const queryParams = [];
 
-      // Workplace type filter
-      if (filters.workplace_type.length > 0) {
-        const placeholders = Array.isArray(filters.workplace_type)
-          ? filters.workplace_type.map(() => "?").join(",") // Creates "?,?" for arrays
-          : "?";
+      // Workplace type filter - fixed
+      if (filters.workplace_type && filters.workplace_type.length > 0) {
+        const placeholders = filters.workplace_type.map(() => "?").join(",");
         whereClauses.push(`workplace_type IN (${placeholders})`);
-        queryParams.push(...[filters.workplace_type].flat()); // Flattens single values or arrays
+        queryParams.push(...filters.workplace_type);
       }
 
       // job nature filter
@@ -468,13 +466,11 @@ const JobsModel = {
         queryParams.push(filters.job_nature);
       }
 
-      // Workplace location filter
-      if (filters.work_location.length > 0) {
-        const placeholders = Array.isArray(filters.work_location)
-          ? filters.work_location.map(() => "?").join(",") // Creates "?,?" for arrays
-          : "?";
+      // Workplace location filter - fixed (was using workplace_type)
+      if (filters.work_location && filters.work_location.length > 0) {
+        const placeholders = filters.work_location.map(() => "?").join(",");
         whereClauses.push(`work_location IN (${placeholders})`);
-        queryParams.push(...[filters.work_location].flat()); // Flattens single values or arrays
+        queryParams.push(...filters.work_location);
       }
 
       // Working days filter
