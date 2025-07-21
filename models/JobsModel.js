@@ -454,15 +454,27 @@ const JobsModel = {
       const queryParams = [];
 
       // Workplace type filter
-      if (filters.workplace_type) {
-        whereClauses.push(`workplace_type = ?`);
-        queryParams.push(filters.workplace_type);
+      if (filters.workplace_type.length > 0) {
+        const placeholders = Array.isArray(filters.workplace_type)
+          ? filters.workplace_type.map(() => "?").join(",") // Creates "?,?" for arrays
+          : "?";
+        whereClauses.push(`workplace_type IN (${placeholders})`);
+        queryParams.push(...[filters.workplace_type].flat()); // Flattens single values or arrays
+      }
+
+      // job nature filter
+      if (filters.job_nature) {
+        whereClauses.push(`job_nature = ?`);
+        queryParams.push(filters.job_nature);
       }
 
       // Workplace location filter
-      if (filters.work_location) {
-        whereClauses.push(`work_location = ?`);
-        queryParams.push(filters.work_location);
+      if (filters.work_location.length > 0) {
+        const placeholders = Array.isArray(filters.work_location)
+          ? filters.work_location.map(() => "?").join(",") // Creates "?,?" for arrays
+          : "?";
+        whereClauses.push(`work_location IN (${placeholders})`);
+        queryParams.push(...[filters.work_location].flat()); // Flattens single values or arrays
       }
 
       // Working days filter
@@ -907,6 +919,18 @@ const JobsModel = {
         [id]
       );
       return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  checkIsJobApplied: async (user_id, job_post_id) => {
+    try {
+      const [isApplied] = await pool.query(
+        `SELECT id FROM applied_jobs WHERE postId = ? AND userId = ?`,
+        [job_post_id, user_id]
+      );
+      return isApplied.length > 0 ? true : false;
     } catch (error) {
       throw new Error(error.message);
     }

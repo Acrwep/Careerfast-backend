@@ -360,12 +360,18 @@ const getJobPosts = async (request, response) => {
     job_categories: request.body.job_categories
       ? request.body.job_categories
       : undefined,
-    workplace_type: request.body.workplace_type,
-    work_location: request.body.work_location,
+    workplace_type: Array.isArray(request.body.workplace_type)
+      ? request.body.workplace_type
+      : [request.body.workplace_type],
+    work_location: Array.isArray(request.body.work_location)
+      ? request.body.work_location
+      : [request.body.work_location],
     working_days: request.body.working_days,
     start_date: request.body.start_date,
     end_date: request.body.end_date,
     salary_sort: request.body.salary_sort,
+    job_nature: request.body.job_nature,
+    // timing: request.body.timing,
   };
 
   try {
@@ -743,6 +749,22 @@ const removeSavedJobs = async (request, response) => {
   }
 };
 
+const checkIsJobApplied = async (request, response) => {
+  const { user_id, job_post_id } = request.query;
+  try {
+    const result = await JobsModel.checkIsJobApplied(user_id, job_post_id);
+    response.status(200).send({
+      message: "Data fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching data",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -783,4 +805,5 @@ module.exports = {
   saveJobPost,
   getSavedJobs,
   removeSavedJobs,
+  checkIsJobApplied,
 };
