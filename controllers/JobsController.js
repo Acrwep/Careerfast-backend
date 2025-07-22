@@ -367,7 +367,7 @@ const getJobPosts = async (request, response) => {
     end_date: request.body.end_date,
     salary_sort: request.body.salary_sort,
     job_nature: request.body.job_nature,
-    // timing: request.body.timing,
+    status: request.body.status,
   };
 
   try {

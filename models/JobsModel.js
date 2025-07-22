@@ -460,6 +460,21 @@ const JobsModel = {
         queryParams.push(...filters.workplace_type);
       }
 
+      // Status filter
+      if (filters.status) {
+        const daysThreshold = filters.days || 15; // Default to 15 if `filters.days` is undefined
+
+        if (filters.status === "Live") {
+          whereClauses.push(
+            `DATEDIFF(NOW(), created_at) BETWEEN -${daysThreshold} AND ${daysThreshold}`
+          );
+        } else if (filters.status === "Expired") {
+          whereClauses.push(
+            `DATEDIFF(NOW(), created_at) < -${daysThreshold} OR DATEDIFF(NOW(), created_at) > ${daysThreshold}`
+          );
+        }
+      }
+
       // job nature filter
       if (filters.job_nature) {
         whereClauses.push(`job_nature = ?`);
