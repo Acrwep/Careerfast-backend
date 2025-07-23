@@ -18,7 +18,7 @@ const LoginModel = {
       const isMatch = await verifyPassword(password, isExists[0].password);
       if (!isMatch) throw new Error("Invalid password!");
       const [result] = await pool.query(
-        `SELECT u.id, u.first_name, u.last_name, u.phone_code, u.phone, u.email, u.password, u.organization, o.name AS organization_type, u.is_active FROM users AS u LEFT JOIN organization_type o ON u.organization_type_id = o.id WHERE u.id = ? AND u.is_active = 1`,
+        `SELECT u.id, u.first_name, u.last_name, u.phone_code, u.phone, u.email, u.password, u.organization, o.name AS organization_type, u.is_active, u.role_id, r.name AS role_name FROM users AS u INNER JOIN role AS r ON u.role_id = r.id LEFT JOIN organization_type o ON u.organization_type_id = o.id WHERE u.id = ? AND u.is_active = 1`,
         isExists[0].id
       );
 
