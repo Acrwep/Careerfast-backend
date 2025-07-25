@@ -761,6 +761,22 @@ const checkIsJobApplied = async (request, response) => {
   }
 };
 
+const checkIsJobSaved = async (request, response) => {
+  const { user_id, job_post_id } = request.query;
+  try {
+    const isSaved = await JobsModel.checkIsJobSaved(user_id, job_post_id);
+    response.status(200).send({
+      message: "Data fetched successfully",
+      data: isSaved,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching data",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -802,4 +818,5 @@ module.exports = {
   getSavedJobs,
   removeSavedJobs,
   checkIsJobApplied,
+  checkIsJobSaved,
 };

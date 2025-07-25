@@ -908,7 +908,8 @@ const JobsModel = {
                         sj.job_post_id,
                         jp.company_name,
                         jp.company_logo,
-                        jp.job_title
+                        jp.job_title,
+                        sj.created_date
                     FROM
                         user_saved_jobs sj
                     INNER JOIN job_post jp ON
@@ -942,6 +943,18 @@ const JobsModel = {
         [job_post_id, user_id]
       );
       return isApplied.length > 0 ? true : false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  checkIsJobSaved: async (user_id, job_post_id) => {
+    try {
+      const [isSaved] = await pool.query(
+        `SELECT id FROM user_saved_jobs WHERE user_id = ? AND job_post_id = ?`,
+        [user_id, job_post_id]
+      );
+      return isSaved.length > 0 ? true : false;
     } catch (error) {
       throw new Error(error.message);
     }

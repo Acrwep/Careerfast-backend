@@ -136,5 +136,5 @@ router.delete("/removeSavedJobs", verifyToken, JobsController.removeSavedJobs);
 router.get("/isProfileUpdated", verifyToken, userController.isProfileUpdated);
 
 router.get("/checkIsJobApplied", verifyToken, JobsController.checkIsJobApplied);
-
+router.get("/checkIsJobSaved", verifyToken, JobsController.checkIsJobSaved);
 module.exports = router;
