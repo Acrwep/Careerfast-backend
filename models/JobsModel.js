@@ -909,14 +909,19 @@ const JobsModel = {
                         jp.company_name,
                         jp.company_logo,
                         jp.job_title,
-                        sj.created_date
+                        sj.created_date,
+                        jp.work_location,
+                        jp.salary_type,
+                        jp.min_salary,
+                        jp.max_salary
                     FROM
                         user_saved_jobs sj
                     INNER JOIN job_post jp ON
-                      sj.job_post_id = jp.id
+                        sj.job_post_id = jp.id
                     WHERE
                         sj.user_id = ?
-                    ORDER BY sj.created_date`;
+                    ORDER BY
+                        sj.created_date`;
       const [savedJobs] = await pool.query(query, [user_id]);
       return savedJobs;
     } catch (error) {
