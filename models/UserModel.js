@@ -577,6 +577,25 @@ const UserModel = {
       throw new Error(error.message);
     }
   },
+
+  updateProfileImage: async (user_id, base64Image) => {
+    try {
+      const [isUserExists] = await pool.query(
+        `SELECT id FROM users WHERE id = ?`,
+        [user_id]
+      );
+      if (isUserExists.length <= 0) {
+        throw new Error("Invalid Id");
+      }
+      const [result] = await pool.query(
+        `UPDATE users SET profile_image = ? WHERE id = ?`,
+        [base64Image, user_id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 // 🔐 Encrypt (Hash) Password

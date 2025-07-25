@@ -503,6 +503,22 @@ const isProfileUpdated = async (request, response) => {
   }
 };
 
+const updateProfileImage = async (request, response) => {
+  const { user_id, profile_image } = request.body;
+  try {
+    const result = await userModel.updateProfileImage(user_id, profile_image);
+    response.status(200).send({
+      message: "Profile image updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).send({
+      message: "Error while updating profile image",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   createUser,
@@ -521,4 +537,5 @@ module.exports = {
   insertEducation,
   getUserProfile,
   isProfileUpdated,
+  updateProfileImage,
 };

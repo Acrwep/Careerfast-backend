@@ -137,4 +137,9 @@ router.get("/isProfileUpdated", verifyToken, userController.isProfileUpdated);
 
 router.get("/checkIsJobApplied", verifyToken, JobsController.checkIsJobApplied);
 router.get("/checkIsJobSaved", verifyToken, JobsController.checkIsJobSaved);
+router.put(
+  "/updateProfileImage",
+  verifyToken,
+  userController.updateProfileImage
+);
 module.exports = router;
