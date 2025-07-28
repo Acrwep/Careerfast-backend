@@ -964,6 +964,111 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  updateJobDescription: async (job_post_id, description) => {
+    try {
+      const [isIdExists] = await pool.query(
+        `SELECT id FROM job_post WHERE id = ?`,
+        [job_post_id]
+      );
+      if (isIdExists.length <= 0) {
+        throw new Error("Invalid Id");
+      }
+      const [result] = await pool.query(
+        `UPDATE job_post SET job_description = ? WHERE id = ?`,
+        [description, job_post_id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  searchByKeyword: async (searchTerm) => {
+    try {
+      const filters = [];
+      // Keyword filter
+      if (searchTerm) {
+        const words = searchTerm
+          .toLowerCase()
+          .split(" ")
+          .filter((word) => word.length > 0);
+
+        words.forEach((word) => {
+          const likeFields = [
+            `LOWER(company_name) LIKE '%${word}%'`,
+            `LOWER(job_title) LIKE '%${word}%'`,
+            `LOWER(job_nature) LIKE '%${word}%'`,
+            `LOWER(workplace_type) LIKE '%${word}%'`,
+            `LOWER(work_location) LIKE '%${word}%'`,
+            `JSON_SEARCH(LOWER(job_category), 'one', '%${word}%') IS NOT NULL`,
+            `JSON_SEARCH(LOWER(skills), 'one', '%${word}%') IS NOT NULL`,
+            `LOWER(experience_type) LIKE '%${word}%'`,
+            `LOWER(salary_type) LIKE '%${word}%'`,
+            `JSON_SEARCH(LOWER(diversity_hiring), 'one', '%${word}%') IS NOT NULL`,
+            `JSON_SEARCH(LOWER(benefits), 'one', '%${word}%') IS NOT NULL`,
+            `LOWER(job_description) LIKE '%${word}%'`,
+          ];
+
+          filters.push(`(${likeFields.join(" OR ")})`);
+        });
+      }
+
+      const whereClause =
+        filters.length > 0 ? "WHERE " + filters.join(" AND ") : "";
+
+      const query = `SELECT
+                        id,
+                        user_id,
+                        company_name,
+                        company_logo,
+                        job_title,
+                        job_nature,
+                        duration_period,
+                        workplace_type,
+                        work_location,
+                        job_category,
+                        skills,
+                        experience_type,
+                        experience_required,
+                        salary_type,
+                        min_salary,
+                        max_salary,
+                        diversity_hiring,
+                        benefits,
+                        job_description,
+                        openings,
+                        working_days,
+                        created_at,
+                        CASE WHEN is_closed = 1 THEN 1 ELSE 0 END AS is_closed
+                    FROM
+                        job_post
+                    ${whereClause}`;
+      const [result] = await pool.query(query);
+
+      // Convert string to array
+      const getPosts = result.map((row) => {
+        return {
+          ...row,
+          duration_period: row.duration_period
+            ? JSON.parse(row.duration_period)
+            : [],
+          job_category: row.job_category ? JSON.parse(row.job_category) : [],
+          skills: row.skills ? JSON.parse(row.skills) : [],
+          experience_required: row.experience_required
+            ? JSON.parse(row.experience_required)
+            : [],
+          diversity_hiring: row.diversity_hiring
+            ? JSON.parse(row.diversity_hiring)
+            : [],
+          benefits: row.benefits ? JSON.parse(row.benefits) : [],
+        };
+      });
+      return getPosts;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

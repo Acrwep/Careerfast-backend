@@ -777,6 +777,41 @@ const checkIsJobSaved = async (request, response) => {
   }
 };
 
+const updateJobDescription = async (request, response) => {
+  const { job_post_id, description } = request.body;
+  try {
+    const result = await JobsModel.updateJobDescription(
+      job_post_id,
+      description
+    );
+    response.status(200).send({
+      message: "Job description updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating job description",
+      details: error.message,
+    });
+  }
+};
+
+const searchByKeyword = async (request, response) => {
+  const { searchTerm } = request.query;
+  try {
+    const result = await JobsModel.searchByKeyword(searchTerm);
+    response.status(200).send({
+      message: "Job posts fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching job posts",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -819,4 +854,6 @@ module.exports = {
   removeSavedJobs,
   checkIsJobApplied,
   checkIsJobSaved,
+  updateJobDescription,
+  searchByKeyword,
 };

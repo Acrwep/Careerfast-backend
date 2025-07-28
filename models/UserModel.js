@@ -472,6 +472,13 @@ const UserModel = {
                         u.is_active = 1 AND u.id = ?`;
       const [result] = await pool.query(query, user_id);
 
+      const getUsers = result.map((row) => {
+        return {
+          ...row,
+          skills: row.skills ? JSON.parse(row.skills) : [],
+        };
+      });
+
       // Get user education details
       const educationQuery = `SELECT
                                   u.id,
@@ -547,7 +554,7 @@ const UserModel = {
 
       //Get combined result set
       const formattedResult = {
-        ...result[0],
+        ...getUsers[0],
         education: getEducation,
         professional: getProfessional,
         projects: getProjects,

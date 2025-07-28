@@ -142,4 +142,12 @@ router.put(
   verifyToken,
   userController.updateProfileImage
 );
+
+router.put(
+  "/updateJobDescription",
+  verifyToken,
+  JobsController.updateJobDescription
+);
+
+router.get("/searchByKeyword", verifyToken, JobsController.searchByKeyword);
 module.exports = router;
