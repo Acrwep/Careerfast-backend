@@ -1,4 +1,12 @@
 const pool = require("../config/dbConfig");
+const dayjs = require("dayjs");
+const relativeTime = require("dayjs/plugin/relativeTime");
+const utc = require("dayjs/plugin/utc");
+const timezone = require("dayjs/plugin/timezone");
+
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const JobsModel = {
   insertJobNature: async (nature_name) => {
@@ -329,9 +337,12 @@ const JobsModel = {
           }));
       });
 
+      const now = dayjs().tz("Asia/Kolkata");
+
       const postData = rows.map((item) => {
         return {
           ...item,
+          date_posted: dayjs(item.created_at).tz("Asia/Kolkata").from(now),
           duration_period: JSON.parse(item.duration_period),
           skills: JSON.parse(item.skills),
           experience_required: JSON.parse(item.experience_required),
@@ -375,7 +386,20 @@ const JobsModel = {
 
     try {
       const [result] = await pool.query(query, values);
-      return result;
+      const now = dayjs().tz("Asia/Kolkata");
+      const formatResult = result.map((item) => {
+        return {
+          ...item,
+          date_posted: dayjs(item.created_at).tz("Asia/Kolkata").from(now),
+          duration_period: JSON.parse(item.duration_period),
+          skills: JSON.parse(item.skills),
+          experience_required: JSON.parse(item.experience_required),
+          diversity_hiring: JSON.parse(item.diversity_hiring),
+          job_category: JSON.parse(item.job_category),
+          benefits: JSON.parse(item.benefits),
+        };
+      });
+      return formatResult;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -548,12 +572,15 @@ const JobsModel = {
 
       const questionQuery = `SELECT id, post_id, question, CASE WHEN isrequired = 1 THEN 1 ELSE 0 END AS isrequired FROM job_post_questions WHERE post_id = ? ORDER BY created_at ASC`;
 
+      const now = dayjs().tz("Asia/Kolkata");
+
       const processedPosts = await Promise.all(
         posts.map(async (post) => {
           const [questions] = await pool.query(questionQuery, [post.id]);
 
           return {
             ...post,
+            date_posted: dayjs(post.created_at).tz("Asia/Kolkata").from(now),
             duration_period: safeParseArray(post.duration_period),
             job_category: safeParseArray(post.job_category),
             skills: safeParseArray(post.skills),
@@ -923,7 +950,15 @@ const JobsModel = {
                     ORDER BY
                         sj.created_date`;
       const [savedJobs] = await pool.query(query, [user_id]);
-      return savedJobs;
+      const now = dayjs().tz("Asia/Kolkata");
+      // Modify the date format
+      const formattedJobs = savedJobs.map((job) => {
+        return {
+          ...job,
+          date_posted: dayjs(job.created_date).tz("Asia/Kolkata").from(now),
+        };
+      });
+      return formattedJobs;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -1148,10 +1183,13 @@ const JobsModel = {
                     ${whereClause}`;
       const [result] = await pool.query(query);
 
+      const now = dayjs().tz("Asia/Kolkata");
+
       // Convert string to array
       const getPosts = result.map((row) => {
         return {
           ...row,
+          date_posted: dayjs(row.created_at).tz("Asia/Kolkata").from(now),
           duration_period: row.duration_period
             ? JSON.parse(row.duration_period)
             : [],

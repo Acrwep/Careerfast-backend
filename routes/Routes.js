@@ -157,4 +157,6 @@ router.get(
   verifyToken,
   JobsController.updateJobBasicDetails
 );
+router.post("/dailyStreak", LoginController.dailyStreak);
+router.get("/getDailyStreak", LoginController.getDailyStreak);
 module.exports = router;

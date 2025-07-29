@@ -27,6 +27,38 @@ const login = async (request, response) => {
   }
 };
 
+const dailyStreak = async (request, response) => {
+  const { user_id } = request.body;
+  try {
+    const result = await LoginModel.dailyStreak(user_id);
+    return response.status(200).json({
+      message: "Data inserted successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while inserting",
+      details: error.message,
+    });
+  }
+};
+
+const getDailyStreak = async (request, response) => {
+  const { user_id } = request.query;
+  try {
+    const streaks = await LoginModel.getDailyStreak(user_id);
+    return response.status(200).json({
+      message: "User streaks fetched successfully",
+      data: streaks,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching user streaks",
+      details: error.message,
+    });
+  }
+};
+
 const generateToken = (user) => {
   return jwt.sign(
     { id: user.id, email: user.email }, //Payload
@@ -37,4 +69,6 @@ const generateToken = (user) => {
 
 module.exports = {
   login,
+  dailyStreak,
+  getDailyStreak,
 };

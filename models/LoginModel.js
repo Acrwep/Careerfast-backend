@@ -1,5 +1,6 @@
 const pool = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
+const moment = require("moment-timezone");
 
 const LoginModel = {
   login: async (email, password, role_id) => {
@@ -23,6 +24,58 @@ const LoginModel = {
       );
 
       return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  dailyStreak: async (user_id) => {
+    try {
+      const now = moment().tz("Asia/Kolkata");
+      const today = now.format("YYYY-MM-DD");
+      const created_at = now.format("YYYY-MM-DD HH:mm:ss");
+      const [result] = await pool.query(
+        `INSERT IGNORE INTO user_daily_usage (user_id, usage_date, created_at) VALUES (?, ?, ?)`,
+        [user_id, today, created_at]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getDailyStreak: async (user_id) => {
+    try {
+      const [rows] = await pool.query(
+        `SELECT usage_date FROM user_daily_usage 
+     WHERE user_id = ? 
+     ORDER BY usage_date DESC`,
+        [user_id]
+      );
+
+      let streak = 0;
+      const now = moment().tz("Asia/Kolkata");
+      let today = now.clone().startOf("day");
+      for (let row of rows) {
+        const usageDate = moment(row.usage_date)
+          .tz("Asia/Kolkata")
+          .startOf("day");
+
+        if (usageDate.isSame(today, "day")) {
+          streak++;
+          today.subtract(1, "day");
+        } else if (usageDate.isSame(today.clone().subtract(1, "day"), "day")) {
+          streak++;
+          today.subtract(1, "day");
+        } else {
+          break; // streak broken
+        }
+      }
+
+      return {
+        daily_log: rows,
+        streak: streak,
+      };
     } catch (error) {
       throw new Error(error.message);
     }
