@@ -778,11 +778,13 @@ const checkIsJobSaved = async (request, response) => {
 };
 
 const updateJobDescription = async (request, response) => {
-  const { job_post_id, description } = request.body;
+  const { job_post_id, description, benefits } = request.body;
+  const formattedBenefits = Array.isArray(benefits) ? benefits : [benefits];
   try {
     const result = await JobsModel.updateJobDescription(
       job_post_id,
-      description
+      description,
+      formattedBenefits
     );
     response.status(200).send({
       message: "Job description updated successfully",
@@ -791,6 +793,113 @@ const updateJobDescription = async (request, response) => {
   } catch (error) {
     response.status(500).json({
       message: "Error while updating job description",
+      details: error.message,
+    });
+  }
+};
+
+const updateEligibility = async (request, response) => {
+  const {
+    job_post_id,
+    experience_type,
+    experience_required,
+    salary_type,
+    min_salary,
+    max_salary,
+    diversity_hiring,
+  } = request.body;
+  const formattedExpReq = Array.isArray(experience_required)
+    ? experience_required
+    : [experience_required];
+  const formattedDiversity = Array.isArray(diversity_hiring)
+    ? diversity_hiring
+    : [diversity_hiring];
+  try {
+    const result = await JobsModel.updateEligibility(
+      job_post_id,
+      experience_type,
+      formattedExpReq,
+      salary_type,
+      min_salary,
+      max_salary,
+      formattedDiversity
+    );
+    response.status(200).send({
+      message: "Job updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating job",
+      details: error.message,
+    });
+  }
+};
+
+const updateJobNature = async (request, response) => {
+  const {
+    job_post_id,
+    job_nature,
+    duration_period,
+    workplace_type,
+    work_location,
+  } = request.body;
+  const formattedDuration = Array.isArray(duration_period)
+    ? duration_period
+    : [duration_period];
+  try {
+    const result = await JobsModel.updateJobNature(
+      job_post_id,
+      job_nature,
+      formattedDuration,
+      workplace_type,
+      work_location
+    );
+    response.status(200).send({
+      message: "Job post updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating job post",
+      details: error.message,
+    });
+  }
+};
+
+const updateJobBasicDetails = async (request, response) => {
+  const {
+    job_post_id,
+    company_name,
+    company_logo,
+    job_title,
+    job_categories,
+    skills,
+    openings,
+    working_days,
+  } = request.body;
+  const formattedJobCategory = Array.isArray(job_categories)
+    ? job_categories
+    : [job_categories];
+  const formattedSkills = Array.isArray(skills) ? skills : [skills];
+  try {
+    const result = await JobsModel.updateJobBasicDetails(
+      job_post_id,
+      company_name,
+      company_logo,
+      job_title,
+      formattedJobCategory,
+      formattedSkills,
+      openings,
+      working_days
+    );
+    response.status(200).send({
+      message: "Job post updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while updating job post",
       details: error.message,
     });
   }
@@ -856,4 +965,7 @@ module.exports = {
   checkIsJobSaved,
   updateJobDescription,
   searchByKeyword,
+  updateEligibility,
+  updateJobNature,
+  updateJobBasicDetails,
 };

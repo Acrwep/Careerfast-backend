@@ -148,6 +148,13 @@ router.put(
   verifyToken,
   JobsController.updateJobDescription
 );
+router.put("/updateEligibility", verifyToken, JobsController.updateEligibility);
 
 router.get("/searchByKeyword", verifyToken, JobsController.searchByKeyword);
+router.get("/updateJobNature", verifyToken, JobsController.updateJobNature);
+router.get(
+  "/updateJobBasicDetails",
+  verifyToken,
+  JobsController.updateJobBasicDetails
+);
 module.exports = router;

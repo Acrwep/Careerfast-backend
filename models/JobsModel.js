@@ -751,7 +751,7 @@ const JobsModel = {
         `SELECT id FROM user_professional WHERE id = ?`,
         [id]
       );
-      if (chechId.length === 0) {
+      if (chechId.length <= 0) {
         throw new Error("Invalid Id");
       }
       const updateQuery = `UPDATE user_professional SET
@@ -965,7 +965,7 @@ const JobsModel = {
     }
   },
 
-  updateJobDescription: async (job_post_id, description) => {
+  updateJobDescription: async (job_post_id, description, benefits) => {
     try {
       const [isIdExists] = await pool.query(
         `SELECT id FROM job_post WHERE id = ?`,
@@ -975,9 +975,111 @@ const JobsModel = {
         throw new Error("Invalid Id");
       }
       const [result] = await pool.query(
-        `UPDATE job_post SET job_description = ? WHERE id = ?`,
-        [description, job_post_id]
+        `UPDATE job_post SET job_description = ?, benefits = ? WHERE id = ?`,
+        [description, JSON.stringify(benefits), job_post_id]
       );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateEligibility: async (
+    job_post_id,
+    experience_type,
+    experience_required,
+    salary_type,
+    min_salary,
+    max_salary,
+    diversity_hiring
+  ) => {
+    try {
+      const [isIdExists] = await pool.query(
+        `SELECT id FROM job_post WHERE id = ?`,
+        [job_post_id]
+      );
+      if (isIdExists.length <= 0) {
+        throw new Error("Invalid Id");
+      }
+      const [result] = await pool.query(
+        `UPDATE job_post SET experience_type = ?, experience_required = ?, salary_type = ?, min_salary = ?, max_salary = ?, diversity_hiring = ? WHERE id = ?`,
+        [
+          experience_type,
+          JSON.stringify(experience_required),
+          salary_type,
+          min_salary,
+          max_salary,
+          JSON.stringify(diversity_hiring),
+          job_post_id,
+        ]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateJobNature: async (
+    job_post_id,
+    job_nature,
+    duration_period,
+    workplace_type,
+    work_location
+  ) => {
+    try {
+      const [isIdExists] = await pool.query(
+        `SELECT id FROM job_post WHERE id = ?`,
+        [job_post_id]
+      );
+      if (isIdExists.length <= 0) {
+        throw new Error("Invalid Id");
+      }
+      const [result] = await pool.query(
+        `UPDATE job_post SET job_nature = ?, duration_period = ?, workplace_type = ?, work_location = ? WHERE id = ?`,
+        [
+          job_nature,
+          JSON.stringify(duration_period),
+          workplace_type,
+          work_location,
+          job_post_id,
+        ]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  updateJobBasicDetails: async (
+    job_post_id,
+    company_name,
+    company_logo,
+    job_title,
+    job_categories,
+    skills,
+    openings,
+    working_days
+  ) => {
+    try {
+      const [isIdExists] = await pool.query(
+        `SELECT id FROM job_post WHERE id = ?`,
+        [job_post_id]
+      );
+      if (isIdExists.length <= 0) {
+        throw new Error("Invalid Id");
+      }
+
+      const updateQuery = `UPDATE job_post SET company_name = ?, company_logo = ?, job_title = ?, job_categories = ?, skills = ?, openings = ?, working_days = ? WHERE id = ?`;
+      const values = [
+        company_name,
+        company_logo,
+        job_title,
+        JSON.stringify(job_categories),
+        JSON.stringify(skills),
+        openings,
+        working_days,
+      ];
+      const [result] = await pool.query(updateQuery, values);
       return result.affectedRows;
     } catch (error) {
       throw new Error(error.message);
