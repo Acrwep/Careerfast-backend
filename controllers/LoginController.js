@@ -59,6 +59,26 @@ const getDailyStreak = async (request, response) => {
   }
 };
 
+const changePassword = async (request, response) => {
+  const { user_id, currentPassword, newPassword } = request.body;
+  try {
+    const result = await LoginModel.changePassword(
+      user_id,
+      currentPassword,
+      newPassword
+    );
+    return response.status(200).json({
+      message: "Password changed successfully",
+      data: result,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while changing password",
+      details: error.message,
+    });
+  }
+};
+
 const generateToken = (user) => {
   return jwt.sign(
     { id: user.id, email: user.email }, //Payload
@@ -71,4 +91,5 @@ module.exports = {
   login,
   dailyStreak,
   getDailyStreak,
+  changePassword,
 };

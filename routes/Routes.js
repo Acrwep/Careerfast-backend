@@ -151,12 +151,13 @@ router.put(
 router.put("/updateEligibility", verifyToken, JobsController.updateEligibility);
 
 router.get("/searchByKeyword", verifyToken, JobsController.searchByKeyword);
-router.get("/updateJobNature", verifyToken, JobsController.updateJobNature);
-router.get(
+router.put("/updateJobNature", verifyToken, JobsController.updateJobNature);
+router.put(
   "/updateJobBasicDetails",
   verifyToken,
   JobsController.updateJobBasicDetails
 );
 router.post("/dailyStreak", LoginController.dailyStreak);
 router.get("/getDailyStreak", LoginController.getDailyStreak);
+router.put("/changePassword", verifyToken, LoginController.changePassword);
 module.exports = router;

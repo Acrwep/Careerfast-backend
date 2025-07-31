@@ -602,6 +602,37 @@ const UserModel = {
       throw new Error(error.message);
     }
   },
+
+  // addNewUser: async (
+  //   user_id,
+  //   first_name,
+  //   last_name,
+  //   email,
+  //   phone_code,
+  //   phone
+  // ) => {
+  //   try {
+  //     const [getRoleId] = await pool.query(
+  //       `SELECT id FROM role WHERE name = 'SUB-RECRUITER'`
+  //     );
+  //     if (getRoleId.length <= 0) {
+  //       throw new Error("Cannot find role");
+  //     }
+  //     const insertQuery = `INSERT INTO users (role_id, first_name, last_name, phone_code, phone, email) VALUES (?, ?, ?, ?, ?, ?)`;
+  //     const values = [
+  //       getRoleId[0].id,
+  //       first_name,
+  //       last_name,
+  //       phone_code,
+  //       phone,
+  //       email,
+  //     ];
+  //     const [result] = await pool.query(insertQuery, values);
+  //     return result.affectedRows;
+  //   } catch (error) {
+  //     throw new Error(error.message);
+  //   }
+  // },
 };
 
 // 🔐 Encrypt (Hash) Password

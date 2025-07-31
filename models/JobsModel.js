@@ -1104,7 +1104,7 @@ const JobsModel = {
         throw new Error("Invalid Id");
       }
 
-      const updateQuery = `UPDATE job_post SET company_name = ?, company_logo = ?, job_title = ?, job_categories = ?, skills = ?, openings = ?, working_days = ? WHERE id = ?`;
+      const updateQuery = `UPDATE job_post SET company_name = ?, company_logo = ?, job_title = ?, job_category = ?, skills = ?, openings = ?, working_days = ? WHERE id = ?`;
       const values = [
         company_name,
         company_logo,
@@ -1113,6 +1113,7 @@ const JobsModel = {
         JSON.stringify(skills),
         openings,
         working_days,
+        job_post_id,
       ];
       const [result] = await pool.query(updateQuery, values);
       return result.affectedRows;

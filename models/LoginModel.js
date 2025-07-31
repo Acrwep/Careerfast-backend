@@ -80,12 +80,40 @@ const LoginModel = {
       throw new Error(error.message);
     }
   },
+
+  changePassword: async (user_id, currentPassword, newPassword) => {
+    try {
+      const query = `SELECT id, password FROM users WHERE id = ? AND is_active = 1`;
+      const [isExists] = await pool.query(query, [user_id]);
+      if (isExists.length <= 0) throw new Error("Invalid user Id");
+      const isMatch = await verifyPassword(
+        currentPassword,
+        isExists[0].password
+      );
+      if (!isMatch) throw new Error("Invalid password!");
+      const hashedPassword = await hashPassword(newPassword);
+      const [result] = await pool.query(
+        `UPDATE users SET password = ? WHERE id = ?`,
+        [hashedPassword, user_id]
+      );
+      return result.affectedRows;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 // 🔐 Verify Password
 const verifyPassword = async (password, hashedPassword) => {
   const isMatch = await bcrypt.compare(password, hashedPassword);
   return isMatch;
+};
+
+// 🔐 Encrypt (Hash) Password
+const hashPassword = async (plainPassword) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+  return hashedPassword;
 };
 
 module.exports = LoginModel;
