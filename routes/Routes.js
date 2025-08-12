@@ -78,7 +78,7 @@ router.get(
   verifyToken,
   JobsController.getJobPostByUserId
 );
-router.post("/getJobPosts", verifyToken, JobsController.getJobPosts);
+router.post("/getJobPosts", JobsController.getJobPosts);
 router.put("/registrationClose", verifyToken, JobsController.registrationClose);
 
 // Job posting module end
@@ -150,7 +150,7 @@ router.put(
 );
 router.put("/updateEligibility", verifyToken, JobsController.updateEligibility);
 
-router.get("/searchByKeyword", verifyToken, JobsController.searchByKeyword);
+router.get("/searchByKeyword", JobsController.searchByKeyword);
 router.put("/updateJobNature", verifyToken, JobsController.updateJobNature);
 router.put(
   "/updateJobBasicDetails",
@@ -160,4 +160,9 @@ router.put(
 router.post("/dailyStreak", LoginController.dailyStreak);
 router.get("/getDailyStreak", LoginController.getDailyStreak);
 router.put("/changePassword", verifyToken, LoginController.changePassword);
+router.get(
+  "/getAppliedCandidatesCount",
+  verifyToken,
+  JobsController.getAppliedCandidatesCount
+);
 module.exports = router;

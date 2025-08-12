@@ -910,6 +910,24 @@ const searchByKeyword = async (request, response) => {
   }
 };
 
+const getAppliedCandidatesCount = async (request, response) => {
+  const { user_id } = request.query;
+  try {
+    const appliedCandidates = await JobsModel.getAppliedCandidatesCount(
+      user_id
+    );
+    response.status(200).send({
+      message: "Applied candidates count fetched successfully",
+      data: appliedCandidates,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching applied candidates count",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -957,4 +975,5 @@ module.exports = {
   updateEligibility,
   updateJobNature,
   updateJobBasicDetails,
+  getAppliedCandidatesCount,
 };

@@ -240,8 +240,8 @@ const UserModel = {
       );
       const appliedjob_id = appliedjob_data[0].id;
 
-      const query = `INSERT INTO applied_job_status_history (applied_job_id, status) VALUES(?,?)`;
-      const values = [appliedjob_id, status];
+      const query = `INSERT INTO applied_job_status_history (applied_job_id, status, user_id) VALUES(?,?,?)`;
+      const values = [appliedjob_id, status, appliedjob_data[0].userId];
 
       const [result] = await pool.query(query, values);
       return result;

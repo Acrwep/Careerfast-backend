@@ -297,7 +297,8 @@ const JobsModel = {
       users.email,
       users.phone_code,
       users.phone,
-      users.profile_image
+      users.profile_image,
+      applied_jobs.id as applied_jobs_id
     FROM job_post
     LEFT JOIN applied_jobs ON applied_jobs.postId = job_post.id
     LEFT JOIN users ON users.id = applied_jobs.userId
@@ -357,6 +358,8 @@ const JobsModel = {
               last_name: row.last_name,
               email: row.email,
               phone: row.phone,
+              image: row.profile_image,
+              applied_jobs_id: row.applied_jobs_id,
               candidateAnswersForRecruiterQuestions:
                 filterQuestionAnswerList.filter(
                   (f) => f.user_id === row.user_id
@@ -1206,6 +1209,23 @@ const JobsModel = {
         };
       });
       return getPosts;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  getAppliedCandidatesCount: async (user_id) => {
+    try {
+      const query = `SELECT
+    COUNT(*) AS total_candidates
+FROM
+    job_post AS j
+INNER JOIN applied_jobs AS aj ON        
+	j.id = aj.postId
+WHERE
+    user_id = ?`;
+      const [candidatesCount] = await pool.query(query, [user_id]);
+      return candidatesCount[0].total_candidates;
     } catch (error) {
       throw new Error(error.message);
     }
