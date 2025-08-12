@@ -1,7 +1,4 @@
-const { pool } = require("../config/dbConfig");
 const UserModel = require("../models/UserModel");
-const userModel = require("../models/UserModel");
-const { response, request } = require("express");
 
 const getUsers = async (request, response) => {
   try {

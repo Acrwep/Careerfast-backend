@@ -1,6 +1,7 @@
 // const { use } = require("react");
 const JobsModel = require("../models/JobsModel");
 const { response, request } = require("express");
+const cities = require("cities");
 
 const insertJobNature = async (request, response) => {
   const { nature_name } = request.body;
@@ -928,6 +929,28 @@ const getAppliedCandidatesCount = async (request, response) => {
   }
 };
 
+const getLocations = async (request, response) => {
+  try {
+    const searchTerm = request.query.q || "";
+    const results = cities
+      .filter((city) =>
+        [city.name, city.state, city.country].some((field) =>
+          field.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      )
+      .slice(0, 20); // Limit to 20 results
+    response.status(200).send({
+      message: "Location fetched successfully",
+      data: results,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching location",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -976,4 +999,5 @@ module.exports = {
   updateJobNature,
   updateJobBasicDetails,
   getAppliedCandidatesCount,
+  getLocations,
 };
