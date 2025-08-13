@@ -1225,7 +1225,38 @@ const JobsModel = {
                     WHERE
                         user_id = ?`;
       const [candidatesCount] = await pool.query(query, [user_id]);
-      return candidatesCount[0].total_candidates;
+      const getGenderQuery = `SELECT
+                                  COUNT(CASE WHEN u.gender = 'Male' THEN 1 END) AS male_count,
+                                  COUNT(CASE WHEN u.gender = 'Female' THEN 1 END) AS female_count,
+                                  COUNT(CASE WHEN u.gender NOT IN ('Male', 'Female') OR u.gender IS NULL THEN 1 END) AS others_count
+                              FROM
+                                  job_post AS j
+                              INNER JOIN applied_jobs AS aj ON
+                                  j.id = aj.postId
+                              INNER JOIN users AS u ON
+                                  u.id = aj.userId
+                              WHERE
+                                  j.user_id = ?;`;
+      const [getGenderStats] = await pool.query(getGenderQuery, [user_id]);
+
+      const domainQuery = `SELECT
+                              JSON_UNQUOTE(
+                                  JSON_EXTRACT(j.job_category, '$[0]')
+                              ) AS job_categories,
+                              IFNULL(COUNT(aj.userId), 0) AS candidates_count
+                          FROM
+                              job_post AS j
+                          INNER JOIN applied_jobs AS aj ON j.id = aj.postId
+                          WHERE
+                              j.user_id = ? GROUP BY job_categories`;
+      const [getDomainStats] = await pool.query(domainQuery, [user_id]);
+      return {
+        candidatesCount: candidatesCount[0].total_candidates,
+        males: getGenderStats[0].male_count,
+        females: getGenderStats[0].female_count,
+        others: getGenderStats[0].others_count,
+        domain_stats: getDomainStats,
+      };
     } catch (error) {
       throw new Error(error.message);
     }
@@ -1234,7 +1265,7 @@ const JobsModel = {
   StatsOfPost: async (user_id, job_post_id) => {
     try {
       const values = [user_id, job_post_id];
-      const getGuery = `SELECT
+      const getquery = `SELECT
                         COUNT(*) AS total_candidates
                     FROM
                         job_post AS j
@@ -1243,7 +1274,7 @@ const JobsModel = {
                         j.id = aj.postId
                     WHERE
                         j.user_id = ? AND j.id = ?`;
-      const [candidatesCount] = await pool.query(getGuery, values);
+      const [candidatesCount] = await pool.query(getquery, values);
 
       const getGenderQuery = `SELECT
                                   COUNT(CASE WHEN u.gender = 'Male' THEN 1 END) AS male_count,
