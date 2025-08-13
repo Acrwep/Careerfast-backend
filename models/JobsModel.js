@@ -1310,7 +1310,8 @@ const JobsModel = {
                             u.phone_code,
                             u.phone,
                             j.id AS job_post_id,
-                            j.job_title
+                            j.job_title,
+                            aj.created_at
                         FROM
                             job_post AS j
                         INNER JOIN applied_jobs AS aj ON
