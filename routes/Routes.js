@@ -167,4 +167,9 @@ router.get(
 );
 router.get("/StatsOfPost", verifyToken, JobsController.StatsOfPost);
 router.get("/getLocations", JobsController.getLocations);
+router.get(
+  "/getAllCandidateByRecruiter",
+  verifyToken,
+  JobsController.getAllCandidateByRecruiter
+);
 module.exports = router;

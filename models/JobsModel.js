@@ -1299,6 +1299,32 @@ const JobsModel = {
       throw new Error(error.message);
     }
   },
+
+  getAllCandidateByRecruiter: async (user_id) => {
+    try {
+      const getquery = `SELECT
+                            u.id AS user_id,
+                            u.first_name,
+                            u.last_name,
+                            u.email,
+                            u.phone_code,
+                            u.phone,
+                            j.id AS job_post_id,
+                            j.job_title
+                        FROM
+                            job_post AS j
+                        INNER JOIN applied_jobs AS aj ON
+                          j.id = aj.postId
+                        INNER JOIN users AS u ON
+                          aj.userId = u.id
+                        WHERE
+                            j.user_id = ? ORDER BY j.created_at ASC`;
+      const [candidates] = await pool.query(getquery, [user_id]);
+      return candidates;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
 };
 
 module.exports = JobsModel;

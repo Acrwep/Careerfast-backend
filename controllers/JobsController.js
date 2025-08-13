@@ -967,6 +967,22 @@ const StatsOfPost = async (request, response) => {
   }
 };
 
+const getAllCandidateByRecruiter = async (request, response) => {
+  const { user_id } = request.query;
+  try {
+    const candidates = await JobsModel.getAllCandidateByRecruiter(user_id);
+    response.status(200).send({
+      message: "Candidates fetched successfully",
+      data: candidates,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: "Error while fetching candidates",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   insertJobNature,
   getJobNature,
@@ -1017,4 +1033,5 @@ module.exports = {
   getAppliedCandidatesCount,
   getLocations,
   StatsOfPost,
+  getAllCandidateByRecruiter,
 };
