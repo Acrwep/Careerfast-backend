@@ -275,7 +275,7 @@ const updateUserAppliedJobStatus = async (request, response) => {
   const { post_id, user_id, status } = request.body;
 
   try {
-    const result = await UserModel.updateUserAppliedJobStatus(
+    const result = await userModel.updateUserAppliedJobStatus(
       post_id,
       user_id,
       status
@@ -295,7 +295,7 @@ const getUserJobPostStatus = async (request, response) => {
   const { applied_job_id } = request.query;
 
   try {
-    const result = await UserModel.getUserJobPostStatus(applied_job_id);
+    const result = await userModel.getUserJobPostStatus(applied_job_id);
     return response
       .status(200)
       .send({ message: "job status get successfully", data: result });
