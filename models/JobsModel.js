@@ -249,16 +249,15 @@ const JobsModel = {
 
   applyForJob: async (postId, userId, answers) => {
     try {
-      const query = `INSERT INTO applied_jobs(postId,userId)VALUES(?,?)`;
+      const query = `INSERT INTO applied_jobs(postId, userId, created_at) VALUES (?, ?, NOW())`;
       const values = [postId, userId];
 
       const [result] = await pool.query(query, values);
 
       if (answers.length >= 1) {
         answers.map(async (item) => {
-          const query = `INSERT INTO job_post_answers (postId,userId,questionId,answer) VALUES(?,?,?,?)`;
+          const query = `INSERT INTO job_post_answers (postId, userId, questionId, answer, created_at) VALUES (?,?,?,?, NOW())`;
           const values = [postId, userId, item.questionId, item.answer];
-
           await pool.query(query, values);
         });
       }
@@ -509,10 +508,16 @@ const JobsModel = {
       }
 
       // Workplace location filter - fixed (was using workplace_type)
-      if (filters.work_location && filters.work_location.length > 0) {
-        const placeholders = filters.work_location.map(() => "?").join(",");
-        whereClauses.push(`work_location IN (${placeholders})`);
-        queryParams.push(...filters.work_location);
+      if (filters.work_location) {
+        const workLocations = Array.isArray(filters.work_location)
+          ? filters.work_location
+          : [filters.work_location]; // wrap single value into array
+
+        if (workLocations.length > 0) {
+          const placeholders = workLocations.map(() => "?").join(",");
+          whereClauses.push(`work_location IN (${placeholders})`);
+          queryParams.push(...workLocations);
+        }
       }
 
       // Working days filter

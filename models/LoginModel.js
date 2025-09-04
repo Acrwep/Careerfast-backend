@@ -48,33 +48,37 @@ const LoginModel = {
     try {
       const [rows] = await pool.query(
         `SELECT usage_date FROM user_daily_usage 
-     WHERE user_id = ? 
-     ORDER BY usage_date DESC`,
+       WHERE user_id = ? 
+       ORDER BY usage_date ASC`, // ascending for easier streak calculation
         [user_id]
       );
 
-      let streak = 0;
-      const now = moment().tz("Asia/Kolkata");
-      let today = now.clone().startOf("day");
-      for (let row of rows) {
+      let streakCount = 0;
+      let lastDate = null;
+      const dailyLog = [];
+
+      rows.forEach((row) => {
         const usageDate = moment(row.usage_date)
           .tz("Asia/Kolkata")
           .startOf("day");
 
-        if (usageDate.isSame(today, "day")) {
-          streak++;
-          today.subtract(1, "day");
-        } else if (usageDate.isSame(today.clone().subtract(1, "day"), "day")) {
-          streak++;
-          today.subtract(1, "day");
+        if (lastDate && usageDate.diff(lastDate, "days") === 1) {
+          streakCount++;
         } else {
-          break; // streak broken
+          streakCount = 1;
         }
-      }
+
+        dailyLog.push({
+          usage_date: usageDate.format("YYYY-MM-DD"),
+          streak: streakCount,
+        });
+
+        lastDate = usageDate;
+      });
 
       return {
-        daily_log: rows,
-        streak: streak,
+        daily_log: dailyLog,
+        streak: streakCount, // current streak
       };
     } catch (error) {
       throw new Error(error.message);

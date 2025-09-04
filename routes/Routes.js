@@ -7,6 +7,7 @@ const OrganizationController = require("../controllers/OrganizationController");
 const { verifyToken } = require("../Validation/Validation");
 const JobsController = require("../controllers/JobsController");
 const EmailController = require("../controllers/EmailController");
+const NotificationController = require("../controllers/NotificationController");
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -172,4 +173,12 @@ router.get(
   verifyToken,
   JobsController.getAllCandidateByRecruiter
 );
+
+router.post("/send-notification", NotificationController.sendNotification); // single user
+router.post("/subscribe-topic", NotificationController.subscribeToTopic); // subscribe user
+router.post(
+  "/broadcast-notification",
+  NotificationController.sendTopicNotification
+); // all users
+
 module.exports = router;
