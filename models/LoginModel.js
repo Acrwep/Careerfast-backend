@@ -47,17 +47,20 @@ const LoginModel = {
   getDailyStreak: async (user_id) => {
     try {
       const [rows] = await pool.query(
-        `SELECT usage_date FROM user_daily_usage 
+        `SELECT usage_date 
+       FROM user_daily_usage 
        WHERE user_id = ? 
-       ORDER BY usage_date ASC`, // ascending for easier streak calculation
+       ORDER BY usage_date ASC`,
         [user_id]
       );
 
+      let dailyLog = [];
       let streakCount = 0;
+      let maxStreak = 0;
+      let currentStreak = 0;
       let lastDate = null;
-      const dailyLog = [];
 
-      rows.forEach((row) => {
+      rows.forEach((row, index) => {
         const usageDate = moment(row.usage_date)
           .tz("Asia/Kolkata")
           .startOf("day");
@@ -73,17 +76,36 @@ const LoginModel = {
           streak: streakCount,
         });
 
+        maxStreak = Math.max(maxStreak, streakCount);
         lastDate = usageDate;
       });
 
+      // Determine current streak → must include today or yesterday
+      if (rows.length > 0) {
+        const lastUsage = moment(rows[rows.length - 1].usage_date)
+          .tz("Asia/Kolkata")
+          .startOf("day");
+
+        const today = moment().tz("Asia/Kolkata").startOf("day");
+        const diff = today.diff(lastUsage, "days");
+
+        if (diff === 0 || diff === 1) {
+          currentStreak = streakCount;
+        } else {
+          currentStreak = 0; // streak broken
+        }
+      }
+
       return {
         daily_log: dailyLog,
-        streak: streakCount, // current streak
+        currentStreak,
+        maxStreak,
       };
     } catch (error) {
       throw new Error(error.message);
     }
   },
+
 
   changePassword: async (user_id, currentPassword, newPassword) => {
     try {

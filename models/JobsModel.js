@@ -1313,6 +1313,7 @@ const JobsModel = {
                             u.last_name,
                             u.email,
                             u.phone_code,
+                            u.profile_image,
                             u.phone,
                             j.id AS job_post_id,
                             j.job_title,

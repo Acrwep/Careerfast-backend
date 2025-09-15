@@ -1,7 +1,7 @@
 const admin = require("../config/firebase");
 
 // ✅ Send notification to a single token (already done)
-const sendNotification = async (req, res) => {
+const sendAppliedNotification = async (req, res) => {
   const { token, title, body } = req.body;
 
   if (!token || !title || !body) {
@@ -67,7 +67,7 @@ const sendTopicNotification = async (req, res) => {
 };
 
 module.exports = {
-  sendNotification, // single token
+  sendAppliedNotification, // single token
   subscribeToTopic, // subscribe to topic
   sendTopicNotification, // broadcast to all
 };

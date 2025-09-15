@@ -8,6 +8,8 @@ const { verifyToken } = require("../Validation/Validation");
 const JobsController = require("../controllers/JobsController");
 const EmailController = require("../controllers/EmailController");
 const NotificationController = require("../controllers/NotificationController");
+const { applyJob } = require("../controllers/ApplyController");
+// const authRoutes = require("./auth"); 
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -174,11 +176,20 @@ router.get(
   JobsController.getAllCandidateByRecruiter
 );
 
-router.post("/send-notification", NotificationController.sendNotification); // single user
-router.post("/subscribe-topic", NotificationController.subscribeToTopic); // subscribe user
+router.post(
+  "/sendAppliedNotification",
+  NotificationController.sendAppliedNotification
+);
+router.post("/subscribe-topic", NotificationController.subscribeToTopic);
 router.post(
   "/broadcast-notification",
   NotificationController.sendTopicNotification
-); // all users
+);
+
+router.post("/applyJob", applyJob);
+
+
+// group auth under /api/auth
+// router.use("/auth", authRoutes);
 
 module.exports = router;
