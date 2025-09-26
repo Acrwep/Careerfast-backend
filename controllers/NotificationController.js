@@ -1,19 +1,38 @@
-const admin = require("../config/firebase");
+const admin = require("firebase-admin");
+const serviceAccount = require("../config/firebaseServiceAccount.json");
 
-// ✅ Send notification to a single token (already done)
+// Initialize Firebase Admin only once
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+        projectId: serviceAccount.project_id,
+    });
+}
+
+// ✅ Send notification to a single token
 const sendAppliedNotification = async (req, res) => {
-    const { token, title, body } = req.body;
+    const { token, title, body, icon } = req.body;
 
     if (!token || !title || !body) {
-        return res
-            .status(400)
-            .json({ error: "token, title, and body are required" });
+        return res.status(400).json({ error: "token, title, and body are required" });
     }
 
     const message = {
-        notification: { title, body },
+        notification: {
+            title,
+            body,
+        },
+        webpush: {
+            notification: {
+                icon: icon || "/favicon.png",
+            },
+            fcm_options: {
+                link: "https://careerfast.com/job-portal",
+            },
+        },
         token,
     };
+
 
     try {
         const response = await admin.messaging().send(message);
@@ -45,14 +64,25 @@ const subscribeToTopic = async (req, res) => {
 
 // ✅ Send notification to all "allUsers"
 const sendTopicNotification = async (req, res) => {
-    const { title, body } = req.body;
+    const { title, body, icon } = req.body;
 
     if (!title || !body) {
         return res.status(400).json({ error: "title and body are required" });
     }
 
     const message = {
-        notification: { title, body },
+        notification: {
+            title,
+            body,
+        },
+        webpush: {
+            notification: {
+                icon: icon || "/favicon.png",
+            },
+            fcm_options: {
+                link: "https://careerfast.com/job-portal",
+            },
+        },
         topic: "allUsers",
     };
 
@@ -66,8 +96,9 @@ const sendTopicNotification = async (req, res) => {
     }
 };
 
+
 module.exports = {
-    sendAppliedNotification, // single token
-    subscribeToTopic, // subscribe to topic
-    sendTopicNotification, // broadcast to all
+    sendAppliedNotification,
+    subscribeToTopic,
+    sendTopicNotification,
 };

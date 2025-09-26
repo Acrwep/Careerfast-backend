@@ -232,14 +232,16 @@ const JobsModel = {
       const lastJobPostId = result?.insertId;
       //insert post questions
 
-      if (questions.length >= 1) {
-        questions.map(async (q) => {
-          const postQuestionQuery = `INSERT INTO job_post_questions(post_id,question,isrequired) VALUES(?,?,?)`;
-          const postQuestionsValues = [lastJobPostId, q.question, q.isrequired];
-
-          await pool.query(postQuestionQuery, postQuestionsValues);
-        });
+      if (questions && questions.length > 0) {
+        for (const q of questions) {
+          const postQuestionQuery = `
+      INSERT INTO job_post_questions (post_id, question, isrequired) 
+      VALUES (?, ?, ?)
+    `;
+          await pool.query(postQuestionQuery, [lastJobPostId, q.question, q.isrequired]);
+        }
       }
+
 
       return result.affectedRows;
     } catch (error) {

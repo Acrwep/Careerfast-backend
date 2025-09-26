@@ -8,8 +8,9 @@ const { verifyToken } = require("../Validation/Validation");
 const JobsController = require("../controllers/JobsController");
 const EmailController = require("../controllers/EmailController");
 const NotificationController = require("../controllers/NotificationController");
-const applyJob = require("../controllers/ApplyController");
+const { applyJob } = require("../controllers/ApplyController");
 const authRoutes = require("./auth");
+const tokenRoutes = require("./tokenRoutes");
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -188,6 +189,8 @@ router.post(
 
 router.post("/applyJob", applyJob);
 
+// Token management routes
+router.use("/token", tokenRoutes);
 
 // group auth under /api/auth
 router.use("/auth", authRoutes);

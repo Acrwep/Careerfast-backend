@@ -134,7 +134,7 @@ const UserModel = {
         `UPDATE users SET profile_image = ?, is_email_verified = ?, user_type = ?, experince_type = ?, total_years = ?, total_months = ?, class = ?, course = ?, start_year = ?, end_year = ?, gender = ? WHERE id = ?`,
         [
           profile_image,
-          is_email_verified,
+          (is_email_verified === "verified" || is_email_verified === "Verified") ? 1 : 0,  // ✅ convert to 1/0
           user_type,
           experince_type,
           total_years,
@@ -148,6 +148,7 @@ const UserModel = {
         ]
       );
 
+
       // insert user address
       const [address_result] = await conn.query(
         `INSERT INTO user_address (user_id, address1, city, state, country, pincode, created_date) VALUES(?, ?, ?, ?, ?, ?, ?)`,
@@ -155,10 +156,10 @@ const UserModel = {
       );
 
       if (professional.length > 0) {
-        professional.map(async (p) => {
-          // Insert user professional
+        for (const p of professional) {
           await conn.query(
-            `INSERT INTO user_professional (user_id, job_title, company_name, designation, start_date, end_date, currently_working, skills) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO user_professional (user_id, job_title, company_name, designation, start_date, end_date, currently_working) 
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [
               user_id,
               p.job_title,
@@ -167,11 +168,20 @@ const UserModel = {
               p.start_date,
               p.end_date,
               p.currently_working,
-              JSON.stringify(p.skills),
             ]
           );
-        });
+        }
       }
+
+      // collect all skills from companies
+      const allSkills = professional.flatMap((p) => p.skills || []);
+
+      // update skills column in users table
+      await conn.query(
+        `UPDATE users SET skills = ? WHERE id = ?`,
+        [JSON.stringify(allSkills), user_id]
+      );
+
 
       const [social_links] = await conn.query(
         `INSERT INTO user_social_links (user_id) VALUES(?)`,
