@@ -11,6 +11,11 @@ const NotificationController = require("../controllers/NotificationController");
 const { applyJob } = require("../controllers/ApplyController");
 const authRoutes = require("./auth");
 const tokenRoutes = require("./tokenRoutes");
+const eventRoutes = require("./eventRoutes");
+
+// ...
+router.use("/events", eventRoutes);
+
 
 // Login module APIs
 router.post("/login", LoginController.login);
@@ -194,5 +199,6 @@ router.use("/token", tokenRoutes);
 
 // group auth under /api/auth
 router.use("/auth", authRoutes);
+router.use("/events", eventRoutes);
 
 module.exports = router;

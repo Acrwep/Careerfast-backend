@@ -6,7 +6,23 @@ const UserModel = {
     try {
       const query = `SELECT * FROM users`;
       const [users] = await pool.query(query);
-      return users;
+
+      const formattedUsers = users.map(user => ({
+        ...user,
+        skills: (() => {
+          try {
+            // Parse if it's valid JSON string
+            return user.skills ? JSON.parse(user.skills) : [];
+          } catch (e) {
+            // Fallback: split by comma if not JSON
+            return user.skills
+              ? user.skills.split(",").map(s => s.replace(/['"]+/g, "").trim())
+              : [];
+          }
+        })(),
+      }));
+
+      return formattedUsers;
     } catch (error) {
       throw new Error("Error fetching users: " + error.message);
     }
