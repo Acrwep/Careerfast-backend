@@ -12,6 +12,11 @@ const { applyJob } = require("../controllers/ApplyController");
 const authRoutes = require("./auth");
 const tokenRoutes = require("./tokenRoutes");
 const eventRoutes = require("./eventRoutes");
+const eventRegistrationRoutes = require("./eventRegistrationRoutes");
+const workshopRoutes = require("./workshopRoutes");
+const workshopRegistrationRoutes = require("./workshopRegistrationRoutes");
+
+
 
 // ...
 router.use("/events", eventRoutes);
@@ -200,5 +205,9 @@ router.use("/token", tokenRoutes);
 // group auth under /api/auth
 router.use("/auth", authRoutes);
 router.use("/events", eventRoutes);
+router.use("/event-registration", eventRegistrationRoutes);
+router.use("/workshops", workshopRoutes);
+router.use("/workshop-registration", workshopRegistrationRoutes);
+
 
 module.exports = router;
