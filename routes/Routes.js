@@ -15,6 +15,8 @@ const eventRoutes = require("./eventRoutes");
 const eventRegistrationRoutes = require("./eventRegistrationRoutes");
 const workshopRoutes = require("./workshopRoutes");
 const workshopRegistrationRoutes = require("./workshopRegistrationRoutes");
+const courseRoutes = require("./courseRoutes");
+
 
 
 
@@ -208,6 +210,6 @@ router.use("/events", eventRoutes);
 router.use("/event-registration", eventRegistrationRoutes);
 router.use("/workshops", workshopRoutes);
 router.use("/workshop-registration", workshopRegistrationRoutes);
-
+router.use("/courses", courseRoutes)
 
 module.exports = router;

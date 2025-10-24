@@ -172,7 +172,7 @@ const getSalaryType = async (request, response) => {
 };
 
 const jobPosting = async (request, response) => {
-  const {
+  let {
     user_id,
     company_name,
     company_logo,
@@ -196,6 +196,10 @@ const jobPosting = async (request, response) => {
     created_at,
     questions,
   } = request.body;
+
+  // 🧹 Clean the openings field
+  openings = openings && !isNaN(openings) ? parseInt(openings, 10) : null;
+
   const formattedDuration = Array.isArray(duration_period)
     ? duration_period
     : [duration_period];
@@ -232,7 +236,7 @@ const jobPosting = async (request, response) => {
       formattedDiversity,
       formattedBenefits,
       job_description,
-      openings,
+      openings, // ✅ now guaranteed to be integer or null
       working_days,
       created_at,
       formatQuestions
@@ -248,6 +252,7 @@ const jobPosting = async (request, response) => {
     });
   }
 };
+
 
 const applyForJob = async (request, response) => {
   const { postId, userId, answers } = request.body;
